@@ -1,0 +1,62 @@
+.content {
+    flex: 1;
+    padding: 10px;
+    background-color: rgb(40, 40, 40);
+    color: white;
+}
+
+.searchBar input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box; /* 패딩을 포함한 박스 모델 */
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+
+.tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+}
+
+.tab.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.exchangeTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.exchangeTable th,
+.exchangeTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.exchangeTable th {
+    background-color: #007bff;
+    color: white;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 600px) {
+    .exchangeTable th,
+    .exchangeTable td {
+        font-size: 12px;
+        padding: 6px;
+    }
+}

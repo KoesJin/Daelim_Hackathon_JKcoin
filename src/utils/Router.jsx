@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 
 import Root from '../Root';
-import ExchangePage from '../page/ExchangePage';
+import ExchangePage from '../page/ExChangePage';
 
 const router = createBrowserRouter(
     [

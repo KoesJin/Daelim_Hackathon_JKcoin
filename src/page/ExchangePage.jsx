@@ -1,3 +1,11 @@
+import ExChangePageHeader from '../component/ExChangePage/Header/ExChangePageHeader';
+import ExChangePageMid from '../component/ExChangePage/Mid/ExChangePageMid';
+
 export default function ExchangePage() {
-    return <div>거래소 페이지</div>;
+    return (
+        <>
+            <ExChangePageHeader />
+            <ExChangePageMid />
+        </>
+    );
 }

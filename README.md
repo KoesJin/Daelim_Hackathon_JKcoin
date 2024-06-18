@@ -1,70 +1,31 @@
-# Getting Started with Create React App
+해커톤 기획 - 코인 모의투자
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+기능
+1. 코인 API - 기간,시간대별 차트 기록
+2. 코인 가격에 맞는 매수, 매도
+3. 예약시스템 - 원하는 기간안에 원하는 가격으로 들어오면 매수 및 매도 기능
+4. 매수, 매도 내역 확인
+5. 본인 모의 계좌 확인 가능
+6. 플레이어간에 송금기능
+7. 로그인, 회원가입 기능 관리자 인증을 통해 회원가입 통과 기능
+8. 쿠폰으로 초기 자금 지급 기능
+9. 투자 리그 - 플레이어간에 순위 기능
+10. 관심 코인 등록기능
+11. 공지사항 - 서버 공지기능으로 사용자에게 서버 오류 안내
+12. 수익률 계산기능
 
-## Available Scripts
+페이지
+1. 로그인, 회원가입 페이지 - 로그인, 회원가입, 비번찾기
+2. 차트 및 매수 매도 예약 페이지 - 매수, 매도, 예약, 차트, 코인정보, 코인 등하락 정보
+3. 매수, 매도 내역 페이지 - 매수, 매도, 예약 내역을 확인
+4. 계좌 정보 확인 페이지 - 계좌 정보, 투자리그, 송금, 수익률 계산
+5. 설정페이지 - 쿠폰 등록, 로그아웃, 공지사항, 정보변경, 아이디 삭제기능
+6. 관리자 페이지 - 회원가입 관리, 공지사항 작성, 쿠폰 발급, 모든 유저 내역 확인
 
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+기술 내역
+1. 로그인, 회원가입, 비번찾기 - 데이터베이스 CRUD
+2. 차트, 코인정보, 등하락 정보, 코인정보 - https://www.coingecko.com/ 참조 api 호출
+3. 매수, 매도, 예약 - api정보 기반 데이터베이스에 있는 가상 머니로 싯가에 맞춰 매수,매도
+4. 계좌 정보, 투자리그, 수익률계산, 송금 - 로컬 스토리지 유저 아이디 기준으로 기능 생성
+5. 쿠폰 등록 - 데이터베이스에 사용기간을 정해서 사용가능한 쿠폰 발급 기능
+6. 공지사항 - 데이터베이스 공지 테이블에서 공지 select 및 관리자 페이지에서 insrt

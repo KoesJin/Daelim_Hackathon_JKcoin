@@ -58,6 +58,7 @@ const ExChangePageMid = () => {
     const [cryptoData, setCryptoData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [activeTab, setActiveTab] = useState('KRW'); // 현재 활성화된 탭 상태
 
     useEffect(() => {
         const fetchExchangeRate = async () => {
@@ -104,7 +105,11 @@ const ExChangePageMid = () => {
         }, 3000);
 
         return () => clearInterval(intervalId);
-    }, []);
+    }, [cryptoSymbols]);
+
+    const handleTabClick = (tab) => {
+        setActiveTab(tab);
+    };
 
     if (loading) return <p>로딩 중...</p>;
     if (error) return <p>오류: {error}</p>;
@@ -116,19 +121,33 @@ const ExChangePageMid = () => {
                 <input type="text" placeholder="코인명/심볼 검색" />
             </div>
             <div className={styles.tabs}>
-                <button className={`${styles.tab} ${styles.active}`}>KRW</button>
-                <button className={styles.tab}>USDT</button>
-                <button className={styles.tab}>관심</button>
+                <button
+                    className={`${styles.tab} ${activeTab === 'KRW' ? styles.active : ''}`}
+                    onClick={() => handleTabClick('KRW')}
+                >
+                    KRW
+                </button>
+                <button
+                    className={`${styles.tab} ${activeTab === 'USDT' ? styles.active : ''}`}
+                    onClick={() => handleTabClick('USDT')}
+                >
+                    USDT
+                </button>
+                <button
+                    className={`${styles.tab} ${activeTab === '관심' ? styles.active : ''}`}
+                    onClick={() => handleTabClick('관심')}
+                >
+                    관심
+                </button>
             </div>
             <div className={styles.exchangeTableContainer}>
                 <table className={styles.exchangeTable}>
                     <thead>
                         <tr>
                             <th>코인 이름/코드</th>
-                            <th>가격 (USD)</th>
-                            <th>가격 (KRW)</th>
+                            <th>가격 ({activeTab === 'KRW' ? 'KRW' : 'USD'})</th>
                             <th>전일대비 (24H %)</th>
-                            <th>거래 대금 (백만 원)</th>
+                            <th>거래 대금 ({activeTab === 'KRW' ? '백만 원' : 'USD'})</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -139,10 +158,19 @@ const ExChangePageMid = () => {
                                         {coin.name} ({coin.symbol})
                                     </Link>
                                 </td>
-                                <td>${parseFloat(coin.priceUsd).toFixed(3)}</td>
-                                <td>{(parseFloat(coin.priceUsd) * exchangeRate).toFixed(3)} KRW</td>
+                                <td>
+                                    {activeTab === 'KRW'
+                                        ? `${(parseFloat(coin.priceUsd) * exchangeRate).toFixed(3)} KRW`
+                                        : `$${parseFloat(coin.priceUsd).toFixed(3)}`}
+                                </td>
                                 <td>{parseFloat(coin.changePercent24Hr).toFixed(2)}%</td>
-                                <td>{(parseFloat(coin.volumeUsd24Hr) / 1000000).toFixed(2)}백만</td>
+                                <td>
+                                    {activeTab === 'KRW'
+                                        ? `${((parseFloat(coin.volumeUsd24Hr) * exchangeRate) / 1000000).toFixed(
+                                              2
+                                          )}백만`
+                                        : `$${parseFloat(coin.volumeUsd24Hr).toFixed(2)}`}
+                                </td>
                             </tr>
                         ))}
                     </tbody>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { Helmet } from 'react-helmet';
 import { createGlobalStyle } from 'styled-components';
@@ -57,6 +57,11 @@ const PageContainer = styled.div`
 `;
 
 function Root() {
+    const location = useLocation();
+
+    // 로그인 페이지 경로를 확인
+    const isLoginPage = location.pathname === '/loginPage';
+
     return (
         <>
             <Helmet>
@@ -65,13 +70,13 @@ function Root() {
             <GlobalStyles />
             <PageContainer className="page-container">
                 <TransitionGroup>
-                    <CSSTransition classNames="fade" timeout={300}>
+                    <CSSTransition classNames="fade" timeout={300} key={location.key}>
                         <AnimationContainer>
                             <Outlet />
                         </AnimationContainer>
                     </CSSTransition>
                 </TransitionGroup>
-                <Footer />
+                {!isLoginPage && <Footer />} {/* 로그인 페이지가 아닌 경우에만 Footer 렌더링 */}
             </PageContainer>
         </>
     );

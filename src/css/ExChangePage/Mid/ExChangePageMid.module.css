@@ -49,7 +49,7 @@
     background-color: rgb(30, 30, 30);
     color: white;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease; /* 전환 효과 */
 }
 
 .tab:not(:first-child):not(:last-child) {
@@ -68,16 +68,10 @@
     border: 1px solid #ddd;
 }
 
-.exchangeTableContainer {
-    flex: 1;
-    overflow-y: auto; /* exchangeTableContainer의 스크롤을 허용 */
-    margin-top: 10px;
-    border: 1px solid #ddd; /* 컨테이너에 보더 추가 */
-}
-
 .exchangeTable {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed; /* 테이블 레이아웃 고정 */
 }
 
 .exchangeTable thead th {
@@ -88,6 +82,8 @@
     z-index: 1;
     box-sizing: border-box;
     border: 1px solid #ddd;
+    transition: background-color 0.3s ease, color 0.3s ease; /* 전환 효과 */
+    width: 25%; /* 각 열의 너비를 25%로 고정 */
 }
 
 .exchangeTable th,
@@ -99,6 +95,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: background-color 0.3s ease, color 0.3s ease; /* 전환 효과 */
+    width: 25%; /* 각 열의 너비를 25%로 고정 */
 }
 
 .exchangeTable th {
@@ -132,4 +130,14 @@
         font-size: 12px;
         padding: 6px;
     }
+}
+
+/* 링크 스타일 제거 및 변경 */
+.exchangeTable td a {
+    color: white; /* 원하는 색상으로 변경 */
+    text-decoration: none; /* 밑줄 제거 */
+}
+
+.exchangeTable td a:hover {
+    color: lightgray; /* 호버 시 색상 변경 */
 }

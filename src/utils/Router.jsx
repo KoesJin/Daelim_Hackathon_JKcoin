@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import Root from '../Root';
 import ExchangePage from '../page/ExChangePage';
 import BuyCoins from '../page/BuyCoins';
+import LoginPage from '../page/LoginPage';
 
 const router = createBrowserRouter(
     [
@@ -17,6 +18,10 @@ const router = createBrowserRouter(
                 {
                     path: '/buycoins',
                     element: <BuyCoins />,
+                },
+                {
+                    path: '/loginPage',
+                    element: <LoginPage />,
                 },
             ],
         },

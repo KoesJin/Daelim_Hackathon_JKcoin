@@ -36,6 +36,11 @@ const ExChangePageMid = () => {
                     'stellar',
                     'cosmos',
                     'tron',
+                    'polkadot',
+                    'uniswap',
+                    'aave',
+                    'algorand',
+                    'avalanche',
                 ];
 
                 const promises = cryptocurrencies.map((crypto) =>

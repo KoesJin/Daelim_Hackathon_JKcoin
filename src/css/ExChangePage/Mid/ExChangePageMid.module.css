@@ -108,8 +108,22 @@
     display: inline-block;
 }
 
-.updated {
-    animation: fadeInOut 2s ease-in-out;
+.priceUp {
+    color: blue;
+    transition: color 1s ease-in-out;
+}
+
+.priceDown {
+    color: red;
+    transition: color 1s ease-in-out;
+}
+
+.changeUp {
+    color: blue;
+}
+
+.changeDown {
+    color: red;
 }
 
 @keyframes fadeInOut {

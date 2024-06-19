@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import styles from '../../../css/ExChangePage/Mid/ExChangePageMid.module.css';
 import { ReactComponent as SearchIcon } from '../../../svg/ExChangePage/Mid/search-icon.svg';
@@ -6,59 +6,64 @@ import { Link } from 'react-router-dom';
 
 const ExChangePageMid = () => {
     const [exchangeRate, setExchangeRate] = useState(null);
-    const [cryptoSymbols, setCryptoSymbols] = useState([
-        'bitcoin',
-        'solana',
-        'ethereum',
-        'stacks',
-        'aelf',
-        'dogecoin',
-        'status',
-        'tether',
-        'litecoin',
-        'cardano',
-        'chainlink',
-        'vechain',
-        'stellar',
-        'cosmos',
-        'tron',
-        'polkadot',
-        'uniswap',
-        'aave',
-        'algorand',
-        'avalanche',
-        'monero',
-        'tezos',
-        'nem',
-        'dash',
-        'iota',
-        'zcash',
-        'decred',
-        'qtum',
-        'waves',
-        'maker',
-        'compound',
-        'yearn-finance',
-        'balancer',
-        'curve-dao-token',
-        'ren',
-        'loopring',
-        'zilliqa',
-        'holo',
-        'theta',
-        'enjin-coin',
-        'bancor',
-        'ocean-protocol',
-        'serum',
-        'sushiswap',
-        '1inch',
-        'pancakeswap',
-        'bakerytoken',
-    ]);
     const [cryptoData, setCryptoData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('KRW'); // 현재 활성화된 탭 상태
+    const [priceChanges, setPriceChanges] = useState({}); // 가격 변경 이력
+
+    const cryptoSymbols = useMemo(
+        () => [
+            'bitcoin',
+            'solana',
+            'ethereum',
+            'stacks',
+            'aelf',
+            'dogecoin',
+            'status',
+            'tether',
+            'litecoin',
+            'cardano',
+            'chainlink',
+            'vechain',
+            'stellar',
+            'cosmos',
+            'tron',
+            'polkadot',
+            'uniswap',
+            'aave',
+            'algorand',
+            'avalanche',
+            'monero',
+            'tezos',
+            'nem',
+            'dash',
+            'iota',
+            'zcash',
+            'decred',
+            'qtum',
+            'waves',
+            'maker',
+            'compound',
+            'yearn-finance',
+            'balancer',
+            'curve-dao-token',
+            'ren',
+            'loopring',
+            'zilliqa',
+            'holo',
+            'theta',
+            'enjin-coin',
+            'bancor',
+            'ocean-protocol',
+            'serum',
+            'sushiswap',
+            '1inch',
+            'pancakeswap',
+            'bakerytoken',
+        ],
+        []
+    );
 
     useEffect(() => {
         const fetchExchangeRate = async () => {
@@ -84,7 +89,27 @@ const ExChangePageMid = () => {
             try {
                 const responses = await Promise.all(requests);
                 const filteredData = responses.filter((data) => data !== null);
-                return filteredData;
+                const updatedPriceChanges = { ...priceChanges };
+
+                filteredData.forEach((crypto) => {
+                    const priceUsd = parseFloat(crypto.priceUsd);
+                    const prevPrice = priceChanges[crypto.id] ? priceChanges[crypto.id].price : priceUsd;
+                    const changeType =
+                        priceUsd > prevPrice
+                            ? 'up'
+                            : priceUsd < prevPrice
+                            ? 'down'
+                            : priceChanges[crypto.id]?.type || '';
+
+                    updatedPriceChanges[crypto.id] = { price: priceUsd, type: changeType };
+                });
+
+                // 원래 순서 유지
+                const sortedData = cryptoSymbols.map((symbol) => filteredData.find((crypto) => crypto?.id === symbol));
+
+                setPriceChanges(updatedPriceChanges);
+                setCryptoData(sortedData);
+                setLoading(false);
             } catch (err) {
                 console.error('Error while fetching crypto data:', err.message);
                 return [];
@@ -93,9 +118,7 @@ const ExChangePageMid = () => {
 
         const fetchData = async () => {
             await fetchExchangeRate();
-            const data = await fetchCryptoData();
-            setCryptoData(data);
-            setLoading(false);
+            await fetchCryptoData();
         };
 
         fetchData();
@@ -105,7 +128,7 @@ const ExChangePageMid = () => {
         }, 3000);
 
         return () => clearInterval(intervalId);
-    }, [cryptoSymbols]);
+    }, [cryptoSymbols, priceChanges]);
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
@@ -151,28 +174,42 @@ const ExChangePageMid = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {cryptoData.map((coin) => (
-                            <tr key={coin.id}>
-                                <td>
-                                    <Link to="/buycoins">
-                                        {coin.name} ({coin.symbol})
-                                    </Link>
-                                </td>
-                                <td>
-                                    {activeTab === 'KRW'
-                                        ? `${(parseFloat(coin.priceUsd) * exchangeRate).toFixed(3)} KRW`
-                                        : `$${parseFloat(coin.priceUsd).toFixed(3)}`}
-                                </td>
-                                <td>{parseFloat(coin.changePercent24Hr).toFixed(2)}%</td>
-                                <td>
-                                    {activeTab === 'KRW'
-                                        ? `${((parseFloat(coin.volumeUsd24Hr) * exchangeRate) / 1000000).toFixed(
-                                              2
-                                          )}백만`
-                                        : `$${parseFloat(coin.volumeUsd24Hr).toFixed(2)}`}
-                                </td>
-                            </tr>
-                        ))}
+                        {cryptoData.map((coin, index) => {
+                            if (!coin) return null;
+                            const currentPrice = parseFloat(coin.priceUsd);
+                            const changeType = priceChanges[coin.id]?.type || '';
+                            const priceClass =
+                                changeType === 'up' ? styles.priceUp : changeType === 'down' ? styles.priceDown : '';
+
+                            return (
+                                <tr key={index}>
+                                    <td>
+                                        <Link to="/buycoins">
+                                            {coin.name} ({coin.symbol})
+                                        </Link>
+                                    </td>
+                                    <td className={priceClass}>
+                                        {activeTab === 'KRW'
+                                            ? `${(currentPrice * exchangeRate).toFixed(3)} KRW`
+                                            : `$${currentPrice.toFixed(3)}`}
+                                    </td>
+                                    <td
+                                        className={
+                                            parseFloat(coin.changePercent24Hr) > 0 ? styles.changeUp : styles.changeDown
+                                        }
+                                    >
+                                        {parseFloat(coin.changePercent24Hr).toFixed(2)}%
+                                    </td>
+                                    <td>
+                                        {activeTab === 'KRW'
+                                            ? `${((parseFloat(coin.volumeUsd24Hr) * exchangeRate) / 1000000).toFixed(
+                                                  2
+                                              )} 백만`
+                                            : `$${(parseFloat(coin.volumeUsd24Hr) / 1000000).toFixed(2)}`}
+                                    </td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>

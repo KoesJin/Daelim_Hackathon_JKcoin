@@ -12,7 +12,7 @@ const GlobalStyles = createGlobalStyle`
     margin: 0;
     padding: 0;
     color: #ffffff; /* 텍스트 색상 */
-    background-color: skyblue;
+    background-color: rgb(40, 40, 40); 
   }
 
   .fade-enter {

@@ -53,6 +53,7 @@ const PageContainer = styled.div`
     background-color: rgb(40, 40, 40); /* 컨테이너 배경색 설정 */
     border: 1px solid white;
     box-sizing: border-box; /* border를 박스 모델에 포함 */
+    overflow: hidden; /* PageContainer의 스크롤을 없앰 */
 `;
 
 function Root() {

@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from '../../css/SettingsIcon/SettingsModal.module.css';
+import { Link } from 'react-router-dom';
 
 const SettingsModal = ({ onClose }) => {
     const handleLogout = () => {
@@ -12,7 +13,9 @@ const SettingsModal = ({ onClose }) => {
             <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
                 <h2>설정</h2>
                 <ul>
-                    <li>실행 중 화면 꺼짐 방지</li>
+                    <Link to="/adminPage">
+                        <li>관리자 페이지</li>
+                    </Link>
                     <li>코인정보 다시 받기</li>
                     <li>관심코인 다시 받기</li>
                     <li>내 보유자산 표시</li>

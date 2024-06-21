@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import styles from '../css/SignUpPage/SignupPage.module.css';
 
 const SignupPage = () => {
@@ -8,7 +10,7 @@ const SignupPage = () => {
         name: '',
         password: '',
         confirmPassword: '',
-        birthDate: '',
+        birthDate: null, // Date 객체 사용
         phoneNumber: '',
         email: '',
     });
@@ -19,6 +21,13 @@ const SignupPage = () => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleDateChange = (date) => {
+        setFormData({
+            ...formData,
+            birthDate: date,
         });
     };
 
@@ -83,14 +92,16 @@ const SignupPage = () => {
                     className={styles.input}
                     required
                 />
-                <input
-                    type="date"
-                    name="birthDate"
-                    placeholder="Birth Date"
-                    value={formData.birthDate}
-                    onChange={handleChange}
+                <DatePicker
+                    selected={formData.birthDate}
+                    onChange={handleDateChange}
                     className={styles.input}
-                    required
+                    placeholderText="Birth Date"
+                    dateFormat="yyyy-MM-dd"
+                    maxDate={new Date()}
+                    showYearDropdown
+                    showMonthDropdown
+                    dropdownMode="select"
                 />
                 <input
                     type="tel"
@@ -100,6 +111,7 @@ const SignupPage = () => {
                     onChange={handleChange}
                     className={styles.input}
                     required
+                    pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" // 전화번호 형식 패턴
                 />
                 <input
                     type="email"
@@ -117,7 +129,6 @@ const SignupPage = () => {
                     뒤로 가기
                 </Link>
             </form>
-
             {error && <p className={styles.error}>{error}</p>}
         </div>
     );

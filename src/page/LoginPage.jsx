@@ -59,7 +59,7 @@ const LoginPage = () => {
                 <button type="submit" className={styles.button}>
                     로그인
                 </button>
-                <Link to="/signup" className={styles.button}>
+                <Link to="/signup" className={`${styles.button} ${styles.linkButton}`}>
                     회원가입
                 </Link>
             </form>

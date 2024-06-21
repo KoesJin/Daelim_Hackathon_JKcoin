@@ -1,15 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from '../../../css/ExChangePage/Mid/ExChangePageMid.module.css';
 import { ReactComponent as SearchIcon } from '../../../svg/ExChangePage/Mid/search-icon.svg';
 import { Link, useNavigate } from 'react-router-dom';
 
 const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
-    const [activeTab, setActiveTab] = useState('KRW'); // 현재 활성화된 탭 상태
+    const [activeTab, setActiveTab] = useState('KRW');
+    const [previousData, setPreviousData] = useState([]);
     const navigate = useNavigate();
-
     if (!localStorage.getItem('user_key')) {
         navigate('/LoginPage');
     }
+    useEffect(() => {
+        if (cryptoData && cryptoData.length > 0) {
+            setPreviousData((prevData) => cryptoData.map((coin, index) => coin || prevData[index]));
+        }
+    }, [cryptoData]);
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
@@ -56,8 +61,9 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {cryptoData.map((coin, index) => {
+                        {previousData.map((coin, index) => {
                             if (!coin) return null;
+
                             const currentPrice = parseFloat(coin.priceUsd);
                             const changeType = priceChanges[coin.id]?.type || '';
                             const priceClass =
@@ -73,7 +79,7 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
                                     <td className={priceClass}>
                                         {activeTab === 'KRW'
                                             ? `${formatNumber(currentPrice * exchangeRate)}`
-                                            : `$${formatNumber(currentPrice, 2)}`}
+                                            : `${formatNumber(currentPrice, 2)}`}
                                     </td>
                                     <td
                                         className={
@@ -87,7 +93,7 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
                                             ? `${formatNumber(
                                                   (parseFloat(coin.volumeUsd24Hr) * exchangeRate) / 1000000
                                               )}백만`
-                                            : `$${formatNumber(parseFloat(coin.volumeUsd24Hr) / 1000000, 2)}`}
+                                            : `${formatNumber(parseFloat(coin.volumeUsd24Hr) / 1000000, 2)}`}
                                     </td>
                                 </tr>
                             );

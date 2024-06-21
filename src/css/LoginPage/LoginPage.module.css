@@ -39,6 +39,7 @@
     border: none;
     border-radius: 5px;
     font-size: 1.2rem;
+    font-weight: bold; /* 글씨를 두껍게 설정 */
     cursor: pointer;
     background-color: rgb(116, 120, 240);
     color: rgb(20, 20, 20);
@@ -48,9 +49,29 @@
     text-align: center;
     display: block;
     text-decoration: none;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
-.button:hover {
+.linkButton {
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    font-weight: bold; /* 글씨를 두껍게 설정 */
+    cursor: pointer;
+    background-color: rgb(116, 120, 240);
+    color: rgb(20, 20, 20);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+    display: block;
+    text-decoration: none;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.button:hover,
+.linkButton:hover {
     background-color: rgb(100, 100, 220);
 }
 

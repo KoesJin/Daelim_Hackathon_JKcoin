@@ -6,6 +6,7 @@ import BuyCoins from '../page/BuyCoins';
 import LoginPage from '../page/LoginPage';
 import ExchangePage from '../page/ExchangePage';
 import SignupPage from '../page/SignupPage';
+import AdminPage from '../page/AdminPage';
 
 const router = createBrowserRouter(
     [
@@ -28,6 +29,10 @@ const router = createBrowserRouter(
                 {
                     path: '/signup',
                     element: <SignupPage />,
+                },
+                {
+                    path: '/adminPage',
+                    element: <AdminPage />,
                 },
             ],
         },

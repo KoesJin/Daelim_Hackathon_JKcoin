@@ -22,7 +22,7 @@
     color: white;
     background: none;
     border: none;
-    margin: 0; /* 마진 제거 */
+    margin: 0 0 35px 0px; /* 마진 제거 */
     padding: 10px;
     transition: background-color 0.3s ease, color 0.3s ease; /* 배경색과 글자색의 전환 효과 */
     cursor: pointer;

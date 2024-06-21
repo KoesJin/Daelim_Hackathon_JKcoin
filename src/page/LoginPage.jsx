@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import styles from '../css/LoginPage/LoginPage.module.css';
 
 const LoginPage = () => {
-    localStorage.removeItem('user_key'); //로그인 페이지 접속하면 로컬스토리지값 삭제
+    localStorage.removeItem('user_key'); // 로그인 페이지 접속하면 로컬스토리지값 삭제
     const [user_id, setUser_id] = useState('');
     const [user_pw, setUser_pw] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -35,19 +37,28 @@ const LoginPage = () => {
     };
 
     return (
-        <div>
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
-                <input type="text" placeholder="User ID" value={user_id} onChange={(e) => setUser_id(e.target.value)} />
+        <div className={styles.container}>
+            <h2 className={styles.title}>Login</h2>
+            <form onSubmit={handleSubmit} className={styles.form}>
+                <input
+                    type="text"
+                    placeholder="User ID"
+                    value={user_id}
+                    onChange={(e) => setUser_id(e.target.value)}
+                    className={styles.input}
+                />
                 <input
                     type="password"
                     placeholder="Password"
                     value={user_pw}
                     onChange={(e) => setUser_pw(e.target.value)}
+                    className={styles.input}
                 />
-                <button type="submit">Login</button>
+                <button type="submit" className={styles.button}>
+                    Login
+                </button>
             </form>
-            {error && <p>{error}</p>}
+            {error && <p className={styles.error}>{error}</p>}
         </div>
     );
 };

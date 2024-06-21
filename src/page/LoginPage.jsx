@@ -4,6 +4,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import styles from '../css/LoginPage/LoginPage.module.css';
 
 const LoginPage = () => {
+    if (localStorage.getItem('user_key') === 'null') {
+        alert('회원인증이 완료되지않았습니다. (관리자: 이하늘 010-24799-363)');
+    }
     localStorage.removeItem('user_key'); // 로그인 페이지 접속하면 로컬스토리지값 삭제
     const [user_id, setUser_id] = useState('');
     const [user_pw, setUser_pw] = useState('');
@@ -12,6 +15,17 @@ const LoginPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // 입력 값 유효성 검사
+        if (!user_id) {
+            setError('아이디를 입력하세요.');
+            return;
+        }
+        if (!user_pw) {
+            setError('비밀번호를 입력하세요.');
+            return;
+        }
+
         try {
             let baseURL = '';
             if (process.env.NODE_ENV === 'development') {
@@ -28,11 +42,11 @@ const LoginPage = () => {
                 localStorage.setItem('user_key', user_key);
                 navigate('/');
             } else {
-                setError('Invalid user ID or password');
+                setError('아이디 또는 비밀번호가 잘못되었습니다.');
             }
         } catch (error) {
             console.error('Error logging in:', error);
-            setError('Error logging in');
+            setError('로그인 오류가 발생했습니다.');
         }
     };
 

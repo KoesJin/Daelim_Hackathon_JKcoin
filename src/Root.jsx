@@ -13,6 +13,11 @@ const GlobalStyles = createGlobalStyle`
     padding: 0;
     color: #ffffff; /* 텍스트 색상 */
     background-color: rgb(40, 40, 40); 
+    overflow: hidden; /* 스크롤을 막음 */
+  }
+
+  html {
+    overflow: hidden; /* 스크롤을 막음 */
   }
 
   .fade-enter {

@@ -1,0 +1,55 @@
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgb(40, 40, 50); /* 로딩 중 배경색을 추가 */
+}
+
+.spinner {
+    width: 64px;
+    height: 64px;
+    border: 8px solid;
+    border-color: #3498db transparent #3498db transparent;
+    border-radius: 50%;
+    animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: red;
+    font-size: 24px;
+    background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+}
+
+/* 추가된 트랜지션 효과 */
+.fadeEnter {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+.fadeEnterActive {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms ease-in, transform 300ms ease-in;
+}
+.fadeExit {
+    opacity: 1;
+    transform: translateY(0);
+}
+.fadeExitActive {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 300ms ease-out, transform 300ms ease-out;
+}

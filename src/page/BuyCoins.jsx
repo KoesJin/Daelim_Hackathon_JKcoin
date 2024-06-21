@@ -6,7 +6,6 @@ import axios from "axios";
 export default function BuyCoins() {
   const [chartData, setChartData] = useState(null);
   const [currentPrice, setCurrentPrice] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [numberOfCoins, setNumberOfCoins] = useState("");
   const [totalPurchasePrice, setTotalPurchasePrice] = useState(0);
   const [walletBalance, setWalletBalance] = useState(0); // State to hold wallet balance
@@ -65,8 +64,7 @@ export default function BuyCoins() {
           throw new Error("Failed to fetch data");
         }
         const data = await response.json();
-        setCurrentPrice(parseFloat(data?.data?.priceUsd).toFixed(8)); // Format to 8 decimal places
-        setLoading(false); // Update loading state
+        setCurrentPrice(parseFloat(data?.data?.priceUsd).toFixed(8));
       } catch (error) {
         console.error("Error fetching current price:", error);
       }

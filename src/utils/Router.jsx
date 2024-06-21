@@ -5,6 +5,7 @@ import Root from '../Root';
 import BuyCoins from '../page/BuyCoins';
 import LoginPage from '../page/LoginPage';
 import ExchangePage from '../page/ExchangePage';
+import SignupPage from '../page/SignupPage';
 
 const router = createBrowserRouter(
     [
@@ -23,6 +24,10 @@ const router = createBrowserRouter(
                 {
                     path: '/loginPage',
                     element: <LoginPage />,
+                },
+                {
+                    path: '/signup',
+                    element: <SignupPage />,
                 },
             ],
         },

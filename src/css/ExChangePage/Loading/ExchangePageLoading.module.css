@@ -3,7 +3,6 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: rgb(40, 40, 50); /* 로딩 중 배경색을 추가 */
 }
 
 .spinner {

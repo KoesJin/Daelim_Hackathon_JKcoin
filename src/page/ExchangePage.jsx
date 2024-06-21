@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { CSSTransition } from 'react-transition-group';
-import { Helmet } from 'react-helmet';
 import ExChangePageHeader from '../component/ExChangePage/Header/ExChangePageHeader';
 import ExChangePageMid from '../component/ExChangePage/Mid/ExChangePageMid';
 import styles from '../css/ExChangePage/Loading/ExchangePageLoading.module.css';
@@ -137,15 +136,6 @@ const ExchangePage = () => {
 
     return (
         <>
-            <Helmet>
-                <meta name="theme-color" content="rgb(40, 40, 50)" />
-                <style>{`
-                    body, html {
-                        background-color: rgb(40, 40, 50);
-                        transition: background-color 0.3s ease;
-                    }
-                `}</style>
-            </Helmet>
             <CSSTransition
                 in={!loading && !error}
                 timeout={300}

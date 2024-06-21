@@ -82,7 +82,12 @@ const SignupPage = () => {
         }
 
         try {
-            const response = await axios.post('http://your-api-endpoint/signup', {
+            let baseURL = '';
+            if (process.env.NODE_ENV === 'development') {
+                // If in development environment, use local IP
+                baseURL = 'http://121.139.20.242:5011';
+            }
+            const response = await axios.post(`${baseURL}/api/signup`, {
                 name,
                 password,
                 birthDate,
@@ -91,13 +96,19 @@ const SignupPage = () => {
             });
 
             if (response.data.success) {
-                navigate('/loginPage');
+                navigate('/LoginPage');
             } else {
                 setError(response.data.message);
             }
         } catch (error) {
             console.error('Error signing up:', error);
-            setError('Error signing up');
+
+            // 서버에서 400 에러 처리
+            if (error.response && error.response.status === 400) {
+                setError(error.response.data.message); // 서버에서 받은 에러 메시지 표시
+            } else {
+                setError('Error signing up'); // 기타 오류 처리
+            }
         }
     };
 
@@ -108,7 +119,7 @@ const SignupPage = () => {
                 <input
                     type="text"
                     name="name"
-                    placeholder="Name"
+                    placeholder="ID"
                     value={formData.name}
                     onChange={handleChange}
                     className={styles.input}
@@ -169,7 +180,6 @@ const SignupPage = () => {
                     onChange={handleChange}
                     className={styles.input}
                     required
-                    pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" // 전화번호 형식 패턴
                 />
                 <input
                     type="email"

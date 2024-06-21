@@ -27,17 +27,19 @@
 .searchBar input {
     width: 100%;
     padding: 10px 10px 10px 35px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: none; /* 기존 보더 제거 */
+    border-bottom: 1px solid #ccc; /* 아래쪽 보더만 추가 */
+    border-radius: 0; /* 보더 반경 제거 */
     box-sizing: border-box;
-    background-color: rgb(50, 50, 50);
+    background-color: rgb(40, 40, 50);
     color: white;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
 .tabs {
     display: flex;
     justify-content: space-between;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 .tab {
@@ -46,10 +48,11 @@
     text-align: center;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: rgb(30, 30, 30);
+    background-color: rgb(40, 40, 50);
     color: white;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease; /* 전환 효과 */
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
 .tab:not(:first-child):not(:last-child) {
@@ -57,7 +60,7 @@
 }
 
 .tab.active {
-    background-color: rgb(152, 53, 246);
+    background-color: rgb(116, 120, 240);
     color: rgb(20, 20, 20);
 }
 
@@ -65,65 +68,85 @@
     flex: 1;
     overflow-y: auto;
     margin-top: 10px;
-    border: 1px solid #ddd;
+    margin-left: -10px;
+    margin-right: -10px;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .exchangeTable {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed; /* 테이블 레이아웃 고정 */
+    table-layout: fixed;
 }
 
 .exchangeTable thead th {
     position: sticky;
     top: 0;
-    background-color: rgb(152, 53, 246);
+    background-color: rgb(40, 40, 50);
     color: white;
     z-index: 1;
     box-sizing: border-box;
-    border: 1px solid #ddd;
-    transition: background-color 0.3s ease, color 0.3s ease; /* 전환 효과 */
-    width: 25%; /* 각 열의 너비를 25%로 고정 */
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: inset 0 1px 0 #ddd, inset 0 -1px 0 #ddd; /* 위아래 테두리를 추가 */
 }
 
 .exchangeTable th,
 .exchangeTable td {
-    border: 1px solid #ddd;
+    border-bottom: 1px solid #444;
     padding: 8px;
-    text-align: center;
     box-sizing: border-box;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    transition: background-color 0.3s ease, color 0.3s ease; /* 전환 효과 */
-    width: 25%; /* 각 열의 너비를 25%로 고정 */
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.exchangeTable th {
-    background-color: rgb(152, 53, 246);
-    color: white;
+.exchangeTable th:nth-child(1),
+.exchangeTable td:nth-child(1) {
+    width: 32%;
+    text-align: center;
+}
+
+.exchangeTable th:nth-child(2),
+.exchangeTable td:nth-child(2) {
+    width: 20%;
+    text-align: right;
+}
+
+.exchangeTable th:nth-child(3),
+.exchangeTable td:nth-child(3) {
+    width: 18%;
+    text-align: right;
+}
+
+.exchangeTable th:nth-child(4),
+.exchangeTable td:nth-child(4) {
+    width: 30%;
+    text-align: center;
 }
 
 .price {
     display: inline-block;
+    width: 100%; /* 값 변경 시 너비 고정 */
 }
 
 .priceUp {
-    color: blue;
+    color: rgb(71, 147, 227);
     transition: color 1s ease-in-out;
 }
 
 .priceDown {
-    color: red;
+    color: #cd0c22;
     transition: color 1s ease-in-out;
 }
 
 .changeUp {
-    color: blue;
+    color: rgb(71, 147, 227);
 }
 
 .changeDown {
-    color: red;
+    color: #cd0c22;
 }
 
 @keyframes fadeInOut {
@@ -139,6 +162,9 @@
 }
 
 @media (max-width: 600px) {
+    .exchangeTableContainer {
+        overflow-x: auto;
+    }
     .exchangeTable th,
     .exchangeTable td {
         font-size: 12px;
@@ -146,12 +172,11 @@
     }
 }
 
-/* 링크 스타일 제거 및 변경 */
 .exchangeTable td a {
-    color: white; /* 원하는 색상으로 변경 */
-    text-decoration: none; /* 밑줄 제거 */
+    color: white;
+    text-decoration: none;
 }
 
 .exchangeTable td a:hover {
-    color: lightgray; /* 호버 시 색상 변경 */
+    color: lightgray;
 }

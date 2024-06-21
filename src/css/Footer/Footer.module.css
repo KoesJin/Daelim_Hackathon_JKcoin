@@ -26,10 +26,11 @@
     padding: 10px;
     transition: background-color 0.3s ease, color 0.3s ease; /* 배경색과 글자색의 전환 효과 */
     cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
 .footerButton.active {
-    background-color: rgb(152, 53, 246);
+    background-color: rgb(116, 120, 240);
 }
 
 /* 반응형 스타일 */

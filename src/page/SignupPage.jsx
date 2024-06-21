@@ -91,7 +91,7 @@ const SignupPage = () => {
             });
 
             if (response.data.success) {
-                navigate('/login');
+                navigate('/loginPage');
             } else {
                 setError(response.data.message);
             }

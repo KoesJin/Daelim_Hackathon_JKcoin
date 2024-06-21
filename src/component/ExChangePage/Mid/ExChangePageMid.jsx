@@ -141,6 +141,10 @@ const ExChangePageMid = () => {
         setActiveTab(tab);
     };
 
+    const formatNumber = (number, decimals = 0) => {
+        return number.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    };
+
     if (loading) return <p>로딩 중...</p>;
     if (error) return <p>오류: {error}</p>;
 
@@ -175,9 +179,9 @@ const ExChangePageMid = () => {
                     <thead>
                         <tr>
                             <th>코인 이름/코드</th>
-                            <th>가격 ({activeTab === 'KRW' ? 'KRW' : 'USD'})</th>
-                            <th>전일대비 (24H %)</th>
-                            <th>거래 대금 ({activeTab === 'KRW' ? '백만 원' : 'USD'})</th>
+                            <th>현재가 </th>
+                            <th>전일대비</th>
+                            <th>거래 대금</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -197,8 +201,8 @@ const ExChangePageMid = () => {
                                     </td>
                                     <td className={priceClass}>
                                         {activeTab === 'KRW'
-                                            ? `${(currentPrice * exchangeRate).toFixed(3)} KRW`
-                                            : `$${currentPrice.toFixed(3)}`}
+                                            ? `${formatNumber(currentPrice * exchangeRate)}`
+                                            : `$${formatNumber(currentPrice, 2)}`}
                                     </td>
                                     <td
                                         className={
@@ -209,10 +213,10 @@ const ExChangePageMid = () => {
                                     </td>
                                     <td>
                                         {activeTab === 'KRW'
-                                            ? `${((parseFloat(coin.volumeUsd24Hr) * exchangeRate) / 100000000).toFixed(
-                                                  2
+                                            ? `${formatNumber(
+                                                  (parseFloat(coin.volumeUsd24Hr) * exchangeRate) / 1000000
                                               )}백만`
-                                            : `$${(parseFloat(coin.volumeUsd24Hr) / 100000).toFixed(2)}`}
+                                            : `$${formatNumber(parseFloat(coin.volumeUsd24Hr) / 1000000, 2)}`}
                                     </td>
                                 </tr>
                             );

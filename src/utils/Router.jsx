@@ -1,6 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
 
 import Root from '../Root';
+
+import BuyCoins from '../page/BuyCoins';
+import LoginPage from '../page/LoginPage';
 import ExchangePage from '../page/ExchangePage';
 import BuyCoins from '../page/BuyCoins';
 import LoginPage from '../page/LoginPage';

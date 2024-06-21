@@ -12,9 +12,7 @@ function ExChangePageHeader() {
                 <span className={styles.title}>거래소</span>
             </div>
             <div className={styles.headerRight}>
-                <Link to="/loginPage">
-                    <div>로그아웃</div>
-                </Link>
+                <Link to="/loginPage"></Link>
                 <SettingsIcon className={styles.icon} />
                 <NotificationsIcon className={styles.icon} />
             </div>

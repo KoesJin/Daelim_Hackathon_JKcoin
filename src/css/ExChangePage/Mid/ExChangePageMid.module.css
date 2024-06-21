@@ -1,0 +1,157 @@
+.content {
+    flex: 1;
+    padding: 10px;
+    background-color: rgb(40, 40, 50);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 15vh);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.searchBar {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 10px;
+    width: 20px;
+    height: 20px;
+    fill: #ccc;
+}
+
+.searchBar input {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: rgb(50, 50, 50);
+    color: white;
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: rgb(30, 30, 30);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease; /* 전환 효과 */
+}
+
+.tab:not(:first-child):not(:last-child) {
+    margin: 0 5px;
+}
+
+.tab.active {
+    background-color: rgb(152, 53, 246);
+    color: rgb(20, 20, 20);
+}
+
+.exchangeTableContainer {
+    flex: 1;
+    overflow-y: auto;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+}
+
+.exchangeTable {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* 테이블 레이아웃 고정 */
+}
+
+.exchangeTable thead th {
+    position: sticky;
+    top: 0;
+    background-color: rgb(152, 53, 246);
+    color: white;
+    z-index: 1;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    transition: background-color 0.3s ease, color 0.3s ease; /* 전환 효과 */
+    width: 25%; /* 각 열의 너비를 25%로 고정 */
+}
+
+.exchangeTable th,
+.exchangeTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color 0.3s ease, color 0.3s ease; /* 전환 효과 */
+    width: 25%; /* 각 열의 너비를 25%로 고정 */
+}
+
+.exchangeTable th {
+    background-color: rgb(152, 53, 246);
+    color: white;
+}
+
+.price {
+    display: inline-block;
+}
+
+.priceUp {
+    color: blue;
+    transition: color 1s ease-in-out;
+}
+
+.priceDown {
+    color: red;
+    transition: color 1s ease-in-out;
+}
+
+.changeUp {
+    color: blue;
+}
+
+.changeDown {
+    color: red;
+}
+
+@keyframes fadeInOut {
+    0% {
+        background-color: rgba(255, 255, 0, 0.3);
+    }
+    50% {
+        background-color: rgba(255, 255, 0, 0);
+    }
+    100% {
+        background-color: rgba(255, 255, 0, 0.3);
+    }
+}
+
+@media (max-width: 600px) {
+    .exchangeTable th,
+    .exchangeTable td {
+        font-size: 12px;
+        padding: 6px;
+    }
+}
+
+/* 링크 스타일 제거 및 변경 */
+.exchangeTable td a {
+    color: white; /* 원하는 색상으로 변경 */
+    text-decoration: none; /* 밑줄 제거 */
+}
+
+.exchangeTable td a:hover {
+    color: lightgray; /* 호버 시 색상 변경 */
+}

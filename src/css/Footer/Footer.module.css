@@ -1,0 +1,40 @@
+.footerContainer {
+    display: flex;
+    justify-content: center; /* 컨테이너 중앙 정렬 */
+    background-color: #1c1c1c;
+    width: 100%;
+    z-index: 1000; /* ensure footer is on top */
+}
+
+.footer {
+    display: flex;
+    background-color: #1c1c1c;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    max-width: 1200px;
+    z-index: 1000; /* ensure footer is on top */
+}
+
+.footerButton {
+    flex: 1;
+    text-align: center;
+    color: white;
+    background: none;
+    border: none;
+    margin: 0; /* 마진 제거 */
+    padding: 10px;
+    transition: background-color 0.3s ease, color 0.3s ease; /* 배경색과 글자색의 전환 효과 */
+    cursor: pointer;
+}
+
+.footerButton.active {
+    background-color: rgb(152, 53, 246);
+}
+
+/* 반응형 스타일 */
+@media (max-width: 600px) {
+    .footerButton {
+        font-size: 14px; /* 모바일에서 폰트 크기 조정 */
+    }
+}

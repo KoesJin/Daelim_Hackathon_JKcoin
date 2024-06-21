@@ -1,0 +1,35 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 50px 10px 20px 10px;
+    background-color: rgb(40, 40, 50);
+    color: white;
+}
+
+.headerLeft {
+    flex: 1;
+}
+
+.headerCenter {
+    flex: 2;
+    text-align: center;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.headerRight {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.icon {
+    margin-left: 10px;
+    width: 24px;
+    height: 24px;
+    fill: white; /* 아이콘 색상을 현재 텍스트 색상과 일치 */
+}

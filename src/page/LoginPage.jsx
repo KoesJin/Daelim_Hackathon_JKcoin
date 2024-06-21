@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import styles from '../css/LoginPage/LoginPage.module.css';
 
 const LoginPage = () => {
@@ -38,7 +38,7 @@ const LoginPage = () => {
 
     return (
         <div className={styles.container}>
-            <h2 className={styles.title}>Login</h2>
+            <h2 className={styles.title}>JK Coin</h2>
             <form onSubmit={handleSubmit} className={styles.form}>
                 <input
                     type="text"
@@ -46,6 +46,7 @@ const LoginPage = () => {
                     value={user_id}
                     onChange={(e) => setUser_id(e.target.value)}
                     className={styles.input}
+                    required
                 />
                 <input
                     type="password"
@@ -53,11 +54,16 @@ const LoginPage = () => {
                     value={user_pw}
                     onChange={(e) => setUser_pw(e.target.value)}
                     className={styles.input}
+                    required
                 />
                 <button type="submit" className={styles.button}>
-                    Login
+                    로그인
                 </button>
+                <Link to="/signup" className={styles.button}>
+                    회원가입
+                </Link>
             </form>
+
             {error && <p className={styles.error}>{error}</p>}
         </div>
     );

@@ -1,9 +1,10 @@
 import { createBrowserRouter } from 'react-router-dom';
 
 import Root from '../Root';
-import ExchangePage from '../page/ExChangePage';
+
 import BuyCoins from '../page/BuyCoins';
 import LoginPage from '../page/LoginPage';
+import ExchangePage from '../page/ExchangePage';
 
 const router = createBrowserRouter(
     [

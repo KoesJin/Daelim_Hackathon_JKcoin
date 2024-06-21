@@ -10,6 +10,10 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
   if (!localStorage.getItem("user_key")) {
     navigate("/LoginPage");
   }
+  if (localStorage.getItem("user_key") === "null") {
+    navigate("/LoginPage");
+  }
+  console.log(localStorage.getItem("user_key"));
   useEffect(() => {
     if (cryptoData && cryptoData.length > 0) {
       setPreviousData((prevData) =>

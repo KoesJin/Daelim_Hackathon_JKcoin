@@ -8,12 +8,13 @@
     background-color: rgb(40, 40, 50);
     color: white;
     font-family: 'Noto Sans KR', sans-serif;
-    padding: 0 20px 0px 20px;
+    padding: 0 20px;
 }
 
 .title {
     font-size: 3rem;
     margin-bottom: 20px;
+    font-weight: bold;
 }
 
 .form {
@@ -34,11 +35,39 @@
     color: white;
 }
 
+.inputDate {
+    padding: 15px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    box-sizing: border-box;
+    background-color: rgb(60, 60, 70);
+    color: white;
+    width: 75vw;
+}
+
+.datePickerWrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+}
+
+.calendarIcon {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    color: white;
+    font-size: 1.5rem;
+}
+
 .button {
     padding: 15px;
     border: none;
     border-radius: 5px;
     font-size: 1.2rem;
+    font-weight: bold;
     cursor: pointer;
     background-color: rgb(116, 120, 240);
     color: rgb(20, 20, 20);

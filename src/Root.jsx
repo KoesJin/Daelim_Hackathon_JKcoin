@@ -63,8 +63,7 @@ const PageContainer = styled.div`
 function Root() {
     const location = useLocation();
 
-    // 로그인 페이지 경로를 확인
-    const isLoginPage = location.pathname === '/loginPage';
+    const isLoginPage = location.pathname === '/LoginPage';
 
     return (
         <>

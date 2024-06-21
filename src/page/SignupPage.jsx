@@ -1,21 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import DatePicker from 'react-datepicker';
+import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { FaRegCalendarAlt } from 'react-icons/fa';
+import { ko } from 'date-fns/locale'; // 한글 로케일 가져오기
 import styles from '../css/SignUpPage/SignupPage.module.css';
+
+registerLocale('ko', ko); // 한글 로케일 등록
 
 const SignupPage = () => {
     const [formData, setFormData] = useState({
         name: '',
         password: '',
         confirmPassword: '',
-        birthDate: null, // Date 객체 사용
+        birthDate: '', // 문자열로 변경
         phoneNumber: '',
         email: '',
     });
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const datePickerRef = useRef(null);
 
     const handleChange = (e) => {
         setFormData({
@@ -27,8 +32,43 @@ const SignupPage = () => {
     const handleDateChange = (date) => {
         setFormData({
             ...formData,
-            birthDate: date,
+            birthDate: date ? formatDate(date) : '',
         });
+    };
+
+    const parseDateString = (value) => {
+        const datePattern = /^\d{4}\.\d{2}\.\d{2}$/;
+        if (!datePattern.test(value)) {
+            return null;
+        }
+
+        const [year, month, day] = value.split('.').map(Number);
+        const parsedDate = new Date(year, month - 1, day);
+
+        return isNaN(parsedDate.getTime()) ? null : parsedDate;
+    };
+
+    const handleBlur = (e) => {
+        if (e.target.name === 'birthDate') {
+            const parsedDate = parseDateString(e.target.value);
+            if (parsedDate) {
+                handleDateChange(parsedDate);
+            } else {
+                setFormData({
+                    ...formData,
+                    birthDate: '',
+                });
+                setError('Invalid date format. Please use YYYY.MM.DD.');
+            }
+        }
+    };
+
+    const formatDate = (date) => {
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = `0${d.getMonth() + 1}`.slice(-2);
+        const day = `0${d.getDate()}`.slice(-2);
+        return `${year}.${month}.${day}`;
     };
 
     const handleSubmit = async (e) => {
@@ -92,17 +132,35 @@ const SignupPage = () => {
                     className={styles.input}
                     required
                 />
-                <DatePicker
-                    selected={formData.birthDate}
-                    onChange={handleDateChange}
-                    className={styles.input}
-                    placeholderText="Birth Date"
-                    dateFormat="yyyy-MM-dd"
-                    maxDate={new Date()}
-                    showYearDropdown
-                    showMonthDropdown
-                    dropdownMode="select"
-                />
+                <div className={styles.datePickerWrapper}>
+                    <input
+                        type="text"
+                        name="birthDate"
+                        placeholder="연도. 월. 일."
+                        value={formData.birthDate}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={styles.inputDate}
+                        pattern="\d{4}\.\d{2}\.\d{2}"
+                        required
+                    />
+                    <FaRegCalendarAlt
+                        className={styles.calendarIcon}
+                        onClick={() => datePickerRef.current.setOpen(true)}
+                    />
+                    <DatePicker
+                        selected={formData.birthDate ? parseDateString(formData.birthDate) : null}
+                        onChange={handleDateChange}
+                        dateFormat="yyyy.MM.dd"
+                        maxDate={new Date()}
+                        showYearDropdown
+                        showMonthDropdown
+                        dropdownMode="select"
+                        locale="ko" // 한글 로케일 설정
+                        ref={datePickerRef}
+                        customInput={<div />}
+                    />
+                </div>
                 <input
                     type="tel"
                     name="phoneNumber"

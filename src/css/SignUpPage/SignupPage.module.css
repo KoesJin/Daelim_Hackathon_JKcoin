@@ -1,3 +1,4 @@
+/* SignupPage.module.css */
 .container {
     display: flex;
     flex-direction: column;
@@ -34,6 +35,33 @@
     color: white;
 }
 
+.inputDate {
+    padding: 15px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    box-sizing: border-box;
+    background-color: rgb(60, 60, 70);
+    color: white;
+    width: 75vw;
+}
+
+.datePickerWrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+}
+
+.calendarIcon {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    color: white;
+    font-size: 1.5rem;
+}
+
 .button {
     padding: 15px;
     border: none;
@@ -53,25 +81,6 @@
 
 .button:hover {
     background-color: rgb(100, 100, 220);
-}
-
-.input[type='date'] {
-    -webkit-appearance: none; /* Remove default styling for Safari and Chrome */
-    -moz-appearance: none; /* Remove default styling for Firefox */
-    appearance: none; /* Remove default styling for other browsers */
-    background-color: rgb(60, 60, 70);
-    border: none;
-    border-radius: 5px;
-    padding: 15px;
-    font-size: 1.2rem;
-    color: white;
-}
-
-.input[type='date']::-webkit-inner-spin-button,
-.input[type='date']::-webkit-calendar-picker-indicator {
-    display: block;
-    filter: invert(1); /* Make the calendar icon visible */
-    cursor: pointer;
 }
 
 .error {

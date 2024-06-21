@@ -58,7 +58,7 @@ const SignupPage = () => {
                     ...formData,
                     birthDate: '',
                 });
-                setError('Invalid date format. Please use YYYY.MM.DD.');
+                setError('날짜 형식이 잘못되었습니다. YYYY.MM.DD 형식으로 입력하세요.');
             }
         }
     };
@@ -71,13 +71,36 @@ const SignupPage = () => {
         return `${year}.${month}.${day}`;
     };
 
+    const validateForm = () => {
+        const { name, password, confirmPassword, birthDate, phoneNumber, email } = formData;
+        if (name.length < 2) {
+            setError('아이디 2글자 이상이어야 합니다.');
+            return false;
+        }
+        if (password !== confirmPassword) {
+            setError('비밀번호가 일치하지 않습니다.');
+            return false;
+        }
+        if (!/^\d{4}\.\d{2}\.\d{2}$/.test(birthDate)) {
+            setError('생년월일은 YYYY.MM.DD 형식으로 입력하세요.');
+            return false;
+        }
+        if (!/^\d{11}$/.test(phoneNumber)) {
+            setError('전화번호는 11자여야 합니다.');
+            return false;
+        }
+        if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(email)) {
+            setError('유효한 이메일 주소를 입력하세요.');
+            return false;
+        }
+        return true;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const { name, password, confirmPassword, birthDate, phoneNumber, email } = formData;
+        const { name, password, birthDate, phoneNumber, email } = formData;
 
-        // 유효성 검사
-        if (password !== confirmPassword) {
-            setError('Passwords do not match');
+        if (!validateForm()) {
             return;
         }
 
@@ -96,7 +119,7 @@ const SignupPage = () => {
             });
 
             if (response.data.success) {
-                navigate('/LoginPage');
+                navigate('/loginPage');
             } else {
                 setError(response.data.message);
             }
@@ -193,7 +216,7 @@ const SignupPage = () => {
                 <button type="submit" className={styles.button}>
                     회원가입
                 </button>
-                <Link to="/loginpage" className={`${styles.button} ${styles.linkButton}`}>
+                <Link to="/loginPage" className={`${styles.button} ${styles.linkButton}`}>
                     뒤로 가기
                 </Link>
             </form>

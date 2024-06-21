@@ -64,7 +64,8 @@ function Root() {
     const location = useLocation();
 
     // 로그인 페이지 경로를 확인
-    const isLoginPage = location.pathname === '/loginpage' || location.pathname === '/signup';
+    const isLoginPage =
+        location.pathname.toLowerCase() === '/loginpage' || location.pathname.toLowerCase() === '/signup';
 
     return (
         <>

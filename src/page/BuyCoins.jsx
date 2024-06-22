@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Chart from 'chart.js/auto';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom'; // Link를 사용합니다
 import axios from 'axios';
+import styles from '../css/BuyCoinsPage/BuyCoins.module.css'; // 모듈 CSS 파일 import
+import { ReactComponent as BackIcon } from '../svg/BuyCoinsPage/Back.svg';
 
 export default function BuyCoins() {
     const [chartData, setChartData] = useState(null);
@@ -9,7 +11,7 @@ export default function BuyCoins() {
     const [numberOfCoins, setNumberOfCoins] = useState('');
     const [totalPurchasePrice, setTotalPurchasePrice] = useState(0);
     const [walletBalance, setWalletBalance] = useState(0); // State to hold wallet balance
-    const [showBuyForm, setShowBuyForm] = useState(false); // State to toggle buy form
+    const [showBuyForm, setShowBuyForm] = useState(true); // State to toggle buy form, default is true
     const [showSellForm, setShowSellForm] = useState(false); // State to toggle sell form
     const [ownedCoins, setOwnedCoins] = useState(null); // State to hold owned coins
     const location = useLocation();
@@ -33,7 +35,7 @@ export default function BuyCoins() {
                         labels: labels,
                         datasets: [
                             {
-                                label: 'Price (USD)',
+                                label: '가격 (USD)',
                                 data: prices,
                                 borderColor: 'rgba(75, 192, 192, 1)',
                                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -43,7 +45,7 @@ export default function BuyCoins() {
                     });
                 }
             } catch (error) {
-                console.error('Error fetching chart data:', error);
+                console.error('차트 데이터 가져오기 오류:', error);
             }
         };
 
@@ -56,7 +58,7 @@ export default function BuyCoins() {
                 // Step 1: Fetch exchange rates
                 const exchangeRateResponse = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
                 if (!exchangeRateResponse.ok) {
-                    throw new Error('Failed to fetch exchange rates');
+                    throw new Error('환율 데이터를 가져오지 못했습니다.');
                 }
                 const exchangeRateData = await exchangeRateResponse.json();
                 const exchangeRate = exchangeRateData.rates;
@@ -64,7 +66,7 @@ export default function BuyCoins() {
                 // Step 2: Fetch current cryptocurrency price
                 const response = await fetch(`https://api.coincap.io/v2/assets/${coinName}`);
                 if (!response.ok) {
-                    throw new Error('Failed to fetch data');
+                    throw new Error('데이터를 가져오지 못했습니다.');
                 }
                 const data = await response.json();
                 const priceUsd = parseFloat(data?.data?.priceUsd);
@@ -75,7 +77,7 @@ export default function BuyCoins() {
 
                 setCurrentPrice(priceInKRW.toFixed(8)); // Format to 2 decimal places for KRW
             } catch (error) {
-                console.error('Error fetching current price:', error);
+                console.error('현재 가격 가져오기 오류:', error);
             }
         };
 
@@ -89,7 +91,7 @@ export default function BuyCoins() {
                 // Get user_key from localStorage
                 const user_key = localStorage.getItem('user_key');
                 if (!user_key) {
-                    throw new Error('User key not found in localStorage');
+                    throw new Error('로컬 스토리지에서 사용자 키를 찾을 수 없습니다.');
                 }
 
                 let baseURL = '';
@@ -105,10 +107,10 @@ export default function BuyCoins() {
                 if (response.data.valid) {
                     setWalletBalance(response.data.krw);
                 } else {
-                    console.log('Invalid user or user key');
+                    console.log('잘못된 사용자 또는 사용자 키');
                 }
             } catch (error) {
-                console.error('Error fetching wallet balance:', error);
+                console.error('지갑 잔액 가져오기 오류:', error);
             }
         };
 
@@ -121,7 +123,7 @@ export default function BuyCoins() {
                 // Get user_key from localStorage
                 const user_key = localStorage.getItem('user_key');
                 if (!user_key) {
-                    throw new Error('User key not found in localStorage');
+                    throw new Error('로컬 스토리지에서 사용자 키를 찾을 수 없습니다.');
                 }
 
                 let baseURL = '';
@@ -139,10 +141,10 @@ export default function BuyCoins() {
                     setOwnedCoins(response.data.numberOfCoins.toFixed(8));
                 } else {
                     setOwnedCoins(null);
-                    console.log('No coins owned for this type');
+                    console.log('해당 종류의 코인을 보유하지 않음');
                 }
             } catch (error) {
-                console.error('Error fetching number of coins:', error);
+                console.error('코인 수량 가져오기 오류:', error);
             }
         };
 
@@ -172,14 +174,14 @@ export default function BuyCoins() {
                             display: true,
                             title: {
                                 display: true,
-                                text: 'Date',
+                                text: '날짜',
                             },
                         },
                         y: {
                             display: true,
                             title: {
                                 display: true,
-                                text: 'Price (USD)',
+                                text: '가격 (USD)',
                             },
                         },
                     },
@@ -198,7 +200,7 @@ export default function BuyCoins() {
             if (totalAmount > walletBalance) {
                 setNumberOfCoins('');
                 setTotalPurchasePrice(0);
-                alert('Insufficient balance to make this purchase.');
+                alert('잔액이 부족합니다.');
             } else {
                 setNumberOfCoins(coins.toFixed(8)); // Convert to string with fixed decimals
                 setTotalPurchasePrice(parseFloat(totalAmount.toFixed(2))); // Convert to number with fixed decimals
@@ -207,7 +209,7 @@ export default function BuyCoins() {
             if (ownedCoins === null || parseFloat(ownedCoins) === 0) {
                 setNumberOfCoins('');
                 setTotalPurchasePrice(0);
-                alert('You do not own any coins to sell.');
+                alert('보유한 코인이 없습니다.');
                 return;
             }
             // Calculate coins based on percentage of ownedCoins
@@ -226,7 +228,7 @@ export default function BuyCoins() {
         if (totalPrice > walletBalance) {
             setNumberOfCoins('');
             setTotalPurchasePrice(0);
-            alert('Insufficient balance to make this purchase.');
+            alert('잔액이 부족합니다.');
         } else {
             setNumberOfCoins(coins);
             setTotalPurchasePrice(totalPrice); // Ensure totalPurchasePrice is a number
@@ -239,7 +241,7 @@ export default function BuyCoins() {
 
         // Check if user has enough balance to make the purchase
         if (totalPrice > walletBalance) {
-            alert('Insufficient balance to make this purchase.');
+            alert('잔액이 부족합니다.');
             return;
         }
 
@@ -247,7 +249,7 @@ export default function BuyCoins() {
             // Get user_key from localStorage
             const user_key = localStorage.getItem('user_key');
             if (!user_key) {
-                throw new Error('User key not found in localStorage');
+                throw new Error('로컬 스토리지에서 사용자 키를 찾을 수 없습니다.');
             }
 
             let baseURL = '';
@@ -265,17 +267,17 @@ export default function BuyCoins() {
             });
 
             if (response.data.success) {
-                alert('Purchase successful!');
+                alert('매수가 성공했습니다!');
                 setWalletBalance(walletBalance - totalPrice);
                 setNumberOfCoins('');
                 setTotalPurchasePrice(0);
                 window.location.reload();
             } else {
-                alert('Purchase failed. Please try again.');
+                alert('매수에 실패했습니다. 다시 시도해주세요.');
             }
         } catch (error) {
-            console.error('Error during purchase:', error);
-            alert('An error occurred during purchase. Please try again.');
+            console.error('매수 중 오류:', error);
+            alert('매수 중 오류가 발생했습니다. 다시 시도해주세요.');
         }
     };
 
@@ -286,7 +288,7 @@ export default function BuyCoins() {
             // Get user_key from localStorage
             const user_key = localStorage.getItem('user_key');
             if (!user_key) {
-                throw new Error('User key not found in localStorage');
+                throw new Error('로컬 스토리지에서 사용자 키를 찾을 수 없습니다.');
             }
 
             let baseURL = '';
@@ -298,7 +300,7 @@ export default function BuyCoins() {
             // Make API call to get the number of coins owned (already handled in useEffect)
             if (ownedCoins === null || parseFloat(ownedCoins) === 0) {
                 setNumberOfCoins('');
-                alert('You do not own any coins of this type.');
+                alert('보유한 코인이 없습니다.');
                 return;
             }
 
@@ -307,7 +309,7 @@ export default function BuyCoins() {
 
             // Check if user has enough coins to make the sale
             if (parseFloat(numberOfCoins) > parseFloat(ownedCoins)) {
-                alert('You do not have enough coins to sell this amount.');
+                alert('보유한 코인이 부족합니다.');
                 return;
             }
 
@@ -320,17 +322,17 @@ export default function BuyCoins() {
             });
 
             if (response.data.success) {
-                alert('Sale successful!');
+                alert('매도가 성공했습니다!');
                 setWalletBalance(walletBalance + totalPrice);
                 setNumberOfCoins('');
                 setTotalPurchasePrice(0);
                 window.location.reload();
             } else {
-                alert('Sale failed. Please try again.');
+                alert('매도에 실패했습니다. 다시 시도해주세요.');
             }
         } catch (error) {
-            console.error('Error during sale:', error);
-            alert('An error occurred during sale. Please try again.');
+            console.error('매도 중 오류:', error);
+            alert('매도 중 오류가 발생했습니다. 다시 시도해주세요.');
         }
     };
 
@@ -345,90 +347,105 @@ export default function BuyCoins() {
     };
 
     return (
-        <div>
-            <h2>Price Chart</h2>
-            <div>
-                <canvas id="coinChart" width={600} height={400}></canvas>
+        <div className={styles.container}>
+            <Link to="/" className={styles.backButton}>
+                <BackIcon className={styles.backIcon} />
+            </Link>
+            <h2>가격 차트</h2>
+            <div className={styles.chartContainer}>
+                <canvas id="coinChart" className={styles.canvas}></canvas>
             </div>
-            <div>
-                <button onClick={toggleBuyForm}>매수</button>
-                <button onClick={toggleSellForm}>매도</button>
+            <div className={styles.buttonContainer}>
+                <button className={styles.actionButton} onClick={toggleBuyForm}>
+                    매수
+                </button>
+                <button className={styles.actionButton} onClick={toggleSellForm}>
+                    매도
+                </button>
             </div>
             {showBuyForm && (
-                <>
+                <div className={styles.formContainer}>
                     <h2>매수 : {coinName}</h2>
-                    <p>코인 가격: {currentPrice}KRW</p>
-                    <p>보유 금액: {walletBalance}KRW</p>
+                    <p>코인 가격: {currentPrice} KRW</p>
+                    <p>보유 금액: {walletBalance} KRW</p>
                     <form onSubmit={handleBuy}>
                         <label>
                             갯수를 입력하세요.:
-                            <input type="text" value={numberOfCoins} onChange={handleChange} />
+                            <input
+                                type="text"
+                                value={numberOfCoins}
+                                onChange={handleChange}
+                                className={styles.buyCoinsInput}
+                            />
                         </label>
-                        <br />
-                        <button type="button" onClick={() => handlePercentageClick(10, 'buy')}>
-                            10% Buy
-                        </button>
-                        <button type="button" onClick={() => handlePercentageClick(25, 'buy')}>
-                            25% Buy
-                        </button>
-                        <button type="button" onClick={() => handlePercentageClick(50, 'buy')}>
-                            50% Buy
-                        </button>
-                        <button type="button" onClick={() => handlePercentageClick(75, 'buy')}>
-                            75% Buy
-                        </button>
-                        <button type="button" onClick={() => handlePercentageClick(99.999999999, 'buy')}>
-                            100% Buy
-                        </button>
-                        <br />
+                        <div className={styles.buttonGroup}>
+                            <button type="button" onClick={() => handlePercentageClick(10, 'buy')}>
+                                10% 매수
+                            </button>
+                            <button type="button" onClick={() => handlePercentageClick(25, 'buy')}>
+                                25% 매수
+                            </button>
+                            <button type="button" onClick={() => handlePercentageClick(50, 'buy')}>
+                                50% 매수
+                            </button>
+                            <button type="button" onClick={() => handlePercentageClick(75, 'buy')}>
+                                75% 매수
+                            </button>
+                            <button type="button" onClick={() => handlePercentageClick(100, 'buy')}>
+                                100% 매수
+                            </button>
+                        </div>
                         <p>
-                            총 금액:
-                            {typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(2) : '0.00'}
+                            총 금액: {typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(2) : '0.00'}{' '}
                             KRW
                         </p>
-                        {/* Display totalPurchasePrice */}
-                        <br />
-                        <button type="submit">매수</button>
+                        <button type="submit" className={styles.submitButton}>
+                            매수
+                        </button>
                     </form>
-                </>
+                </div>
             )}
             {showSellForm && (
-                <>
+                <div className={styles.formContainer}>
                     <h2>매도 : {coinName}</h2>
-                    <p>코인 가격 : {currentPrice}KRW</p>
-                    <p>보유 코인 : {ownedCoins ? ownedCoins : '0'}</p>
+                    <p>코인 가격: {currentPrice} KRW</p>
+                    <p>보유 코인: {ownedCoins ? ownedCoins : '0'}</p>
                     <form onSubmit={handleSell}>
                         <label>
                             갯수를 입력하세요.:
-                            <input type="text" value={numberOfCoins} onChange={handleChange} />
+                            <input
+                                type="text"
+                                value={numberOfCoins}
+                                onChange={handleChange}
+                                className={styles.buyCoinsInput}
+                            />
                         </label>
-                        <br />
-                        <button type="button" onClick={() => handlePercentageClick(10, 'sell')}>
-                            10% Sell
-                        </button>
-                        <button type="button" onClick={() => handlePercentageClick(25, 'sell')}>
-                            25% Sell
-                        </button>
-                        <button type="button" onClick={() => handlePercentageClick(50, 'sell')}>
-                            50% Sell
-                        </button>
-                        <button type="button" onClick={() => handlePercentageClick(75, 'sell')}>
-                            75% Sell
-                        </button>
-                        <button type="button" onClick={() => handlePercentageClick(100, 'sell')}>
-                            100% Sell
-                        </button>
-                        <br />
+                        <div className={styles.buttonGroup}>
+                            <button type="button" onClick={() => handlePercentageClick(10, 'sell')}>
+                                10% 매도
+                            </button>
+                            <button type="button" onClick={() => handlePercentageClick(25, 'sell')}>
+                                25% 매도
+                            </button>
+                            <button type="button" onClick={() => handlePercentageClick(50, 'sell')}>
+                                50% 매도
+                            </button>
+                            <button type="button" onClick={() => handlePercentageClick(75, 'sell')}>
+                                75% 매도
+                            </button>
+                            <button type="button" onClick={() => handlePercentageClick(100, 'sell')}>
+                                100% 매도
+                            </button>
+                        </div>
                         <p>
-                            총 금액:
-                            {typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(2) : '0.00'}
+                            총 금액: {typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(2) : '0.00'}{' '}
                             KRW
                         </p>
-                        {/* Display totalPurchasePrice */}
-                        <br />
-                        <button type="submit">매도</button>
+                        <button type="submit" className={styles.submitButton}>
+                            매도
+                        </button>
                     </form>
-                </>
+                </div>
             )}
         </div>
     );

@@ -59,7 +59,7 @@ const LoginPage = () => {
                     placeholder="User ID"
                     value={user_id}
                     onChange={(e) => setUser_id(e.target.value)}
-                    className={styles.input}
+                    className={styles.loginInput}
                     required
                 />
                 <input
@@ -67,7 +67,7 @@ const LoginPage = () => {
                     placeholder="Password"
                     value={user_pw}
                     onChange={(e) => setUser_pw(e.target.value)}
-                    className={styles.input}
+                    className={styles.loginInput}
                     required
                 />
                 <button type="submit" className={styles.button}>

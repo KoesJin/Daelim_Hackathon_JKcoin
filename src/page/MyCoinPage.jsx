@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import styles from '../css/MyCoinPage/MyCoinPage.module.css';
 
 export default function MyCoinPage() {
     const [coins, setCoins] = useState([]);
@@ -8,7 +9,6 @@ export default function MyCoinPage() {
     const [profitLoss, setProfitLoss] = useState(0);
 
     useEffect(() => {
-        // Fetch the user's funds
         const fetchFunds = async () => {
             const userKey = localStorage.getItem('user_key');
             if (!userKey) {
@@ -19,7 +19,6 @@ export default function MyCoinPage() {
             try {
                 let baseURL = '';
                 if (process.env.NODE_ENV === 'development') {
-                    // If in development environment, use local IP
                     baseURL = 'http://121.139.20.242:5011';
                 }
 
@@ -36,7 +35,6 @@ export default function MyCoinPage() {
             }
         };
 
-        // Fetch the user's coins data
         const fetchCoins = async () => {
             const userKey = localStorage.getItem('user_key');
             if (!userKey) {
@@ -47,7 +45,6 @@ export default function MyCoinPage() {
             try {
                 let baseURL = '';
                 if (process.env.NODE_ENV === 'development') {
-                    // If in development environment, use local IP
                     baseURL = 'http://121.139.20.242:5011';
                 }
 
@@ -75,25 +72,28 @@ export default function MyCoinPage() {
                         const averagePurchasePrice = myCoin.totalPurchasePrice / myCoin.totalPurchased;
                         const profitLossPercent =
                             ((coinInfo.current_price - averagePurchasePrice) / averagePurchasePrice) * 100;
+                        const profitLossAmount = value - totalCoinsOwned * averagePurchasePrice;
                         return {
                             ...myCoin,
                             numberOfCoins: totalCoinsOwned,
                             current_price: coinInfo.current_price,
                             value: value,
-                            profit_loss: profitLossPercent,
+                            profit_loss_percent: profitLossPercent,
+                            profit_loss_amount: profitLossAmount,
                         };
                     });
 
                     const totalValue = updatedCoins.reduce((acc, coin) => acc + coin.value, 0);
-                    const totalProfitLoss = updatedCoins.reduce(
-                        (acc, coin) =>
-                            acc + (coin.value - coin.numberOfCoins * (coin.totalPurchasePrice / coin.totalPurchased)),
+                    const totalProfitLoss = updatedCoins.reduce((acc, coin) => acc + coin.profit_loss_amount, 0);
+                    const totalInvestment = updatedCoins.reduce(
+                        (acc, coin) => acc + coin.totalPurchased * (coin.totalPurchasePrice / coin.totalPurchased),
                         0
                     );
+                    const totalProfitLossPercent = (totalProfitLoss / totalInvestment) * 100;
 
                     setCoins(updatedCoins);
                     setTotalValue(totalValue);
-                    setProfitLoss((totalProfitLoss / totalValue) * 100);
+                    setProfitLoss(totalProfitLossPercent);
                 } else {
                     console.error('Invalid user_key');
                 }
@@ -106,42 +106,62 @@ export default function MyCoinPage() {
         fetchCoins();
     }, []);
 
+    const formatNumber = (number, decimals = 0) => {
+        return number.toLocaleString('ko-KR', {
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals,
+        });
+    };
+
+    const getProfitLossClass = (value) => {
+        return value >= 0 ? styles.profit : styles.loss;
+    };
+
     return (
-        <div>
-            <h1>내 코인 정보</h1>
-            <div>
-                <h2>
-                    총 금액(KRW): {(totalMoney + totalValue).toFixed(0).toLocaleString()}
-                    KRW
-                </h2>
-                <h2>보유 자산(KRW): {totalMoney.toFixed(0).toLocaleString()}KRW</h2>
-                <h2>코인의 총 가치(KRW): {totalValue.toFixed(0).toLocaleString()}KRW</h2>
-                <h2>총 손익: {profitLoss.toFixed(2)}%</h2>
+        <div className={styles.container}>
+            <div className={styles.header}>
+                <div className={styles.title}>코인정보</div>
             </div>
-            <div>
+            <div className={styles.searchBar}>
+                <input type="text" placeholder="코인명/심볼 검색" className={styles.searchInput} />
+            </div>
+            <div className={styles.totalAssets}>
+                <span>총 보유자산</span>
+                <span>{formatNumber(totalMoney + totalValue, 0)} KRW</span>
+            </div>
+            <div className={styles.assetDetails}>
+                <h2>보유 자산(KRW): {formatNumber(totalMoney, 0)} KRW</h2>
+                <h2>코인의 총 가치(KRW): {formatNumber(totalValue, 0)} KRW</h2>
+                <h2 className={getProfitLossClass(profitLoss)}>총 손익: {profitLoss.toFixed(2)}%</h2>
+            </div>
+            <div className={styles.coinsList}>
                 <h2>보유 코인</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>코인</th>
-                            <th>수량</th>
-                            <th>현재 가격</th>
-                            <th>가치</th>
-                            <th>손익 (%)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {coins.map((coin) => (
-                            <tr key={coin.coinName}>
-                                <td>{coin.coinName}</td>
-                                <td>{coin.numberOfCoins.toFixed(10)}</td>
-                                <td>${coin.current_price.toFixed(2)}</td>
-                                <td>${coin.value.toFixed(2)}</td>
-                                <td>{coin.profit_loss.toFixed(2)}%</td>
+                <div className={styles.tableContainer}>
+                    <table className={styles.coinTable}>
+                        <thead>
+                            <tr>
+                                <th>코인</th>
+                                <th>수량</th>
+                                <th>현재 가격 (KRW)</th>
+                                <th>가치 (KRW)</th>
+                                <th>손익 (%)</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {coins.map((coin) => (
+                                <tr key={coin.coinName}>
+                                    <td>{coin.coinName}</td>
+                                    <td>{formatNumber(coin.numberOfCoins, 3)}</td>
+                                    <td>{formatNumber(coin.current_price, 2)} KRW</td>
+                                    <td>{formatNumber(coin.value, 2)} KRW</td>
+                                    <td className={getProfitLossClass(coin.profit_loss_percent)}>
+                                        {coin.profit_loss_percent.toFixed(2)}%
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

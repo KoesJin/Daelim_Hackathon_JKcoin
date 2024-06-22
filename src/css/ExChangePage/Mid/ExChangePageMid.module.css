@@ -131,14 +131,25 @@
     width: 100%; /* 값 변경 시 너비 고정 */
 }
 
+@keyframes highlight {
+    0% {
+        background-color: rgba(246, 226, 75, 1);
+    }
+    100% {
+        background-color: rgba(246, 226, 75, 0);
+    }
+}
+
 .priceUp {
     color: rgb(71, 147, 227);
     transition: color 1s ease-in-out;
+    animation: highlight 1.5s forwards;
 }
 
 .priceDown {
     color: #cd0c22;
     transition: color 1s ease-in-out;
+    animation: highlight 1.5s forwards;
 }
 
 .changeUp {
@@ -147,18 +158,6 @@
 
 .changeDown {
     color: #cd0c22;
-}
-
-@keyframes fadeInOut {
-    0% {
-        background-color: rgba(255, 255, 0, 0.3);
-    }
-    50% {
-        background-color: rgba(255, 255, 0, 0);
-    }
-    100% {
-        background-color: rgba(255, 255, 0, 0.3);
-    }
 }
 
 @media (max-width: 600px) {

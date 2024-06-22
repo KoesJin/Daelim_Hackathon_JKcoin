@@ -73,7 +73,7 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
                                 changeType === 'up' ? styles.priceUp : changeType === 'down' ? styles.priceDown : '';
 
                             return (
-                                <tr key={index}>
+                                <tr key={`${coin.id}-${priceChanges[coin.id]?.type}`}>
                                     <td>
                                         <Link to={`/buycoins?coinName=${encodeURIComponent(coin.id)}`}>
                                             {coin.name} ({coin.symbol})

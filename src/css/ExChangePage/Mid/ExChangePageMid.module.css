@@ -131,6 +131,24 @@
     width: 100%; /* 값 변경 시 너비 고정 */
 }
 
+/* 기존 CSS는 동일하게 유지 */
+
+/* 색상 정의 */
+.priceUp {
+    color: #cd0c22;
+    animation: highlight 1.5s forwards;
+}
+
+.priceDown {
+    color: rgb(71, 147, 227);
+    animation: highlight 1.5s forwards;
+}
+
+.priceNeutral {
+    color: white; /* 하얀색 */
+}
+
+/* 애니메이션 효과 */
 @keyframes highlight {
     0% {
         background-color: rgba(246, 226, 75, 1);
@@ -140,24 +158,16 @@
     }
 }
 
-.priceUp {
-    color: rgb(71, 147, 227);
-    transition: color 1s ease-in-out;
-    animation: highlight 1.5s forwards;
-}
-
-.priceDown {
-    color: #cd0c22;
-    transition: color 1s ease-in-out;
-    animation: highlight 1.5s forwards;
-}
-
 .changeUp {
-    color: rgb(71, 147, 227);
+    color: #cd0c22;
 }
 
 .changeDown {
-    color: #cd0c22;
+    color: rgb(71, 147, 227);
+}
+
+.changeNeutral {
+    color: white; /* 하얀색 */
 }
 
 @media (max-width: 600px) {

@@ -68,9 +68,20 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
                             if (!coin) return null;
 
                             const currentPrice = parseFloat(coin.priceUsd);
-                            const changeType = priceChanges[coin.id]?.type || '';
+                            const changePercent = parseFloat(coin.changePercent24Hr);
+                            const changeType = changePercent > 0 ? 'up' : changePercent < 0 ? 'down' : 'neutral';
                             const priceClass =
-                                changeType === 'up' ? styles.priceUp : changeType === 'down' ? styles.priceDown : '';
+                                changeType === 'up'
+                                    ? styles.priceUp
+                                    : changeType === 'down'
+                                    ? styles.priceDown
+                                    : styles.priceNeutral;
+                            const changeClass =
+                                changeType === 'up'
+                                    ? styles.changeUp
+                                    : changeType === 'down'
+                                    ? styles.changeDown
+                                    : styles.changeNeutral;
 
                             return (
                                 <tr key={`${coin.id}-${priceChanges[coin.id]?.type}`}>
@@ -84,13 +95,7 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
                                             ? `${formatNumber(currentPrice * exchangeRate)}`
                                             : `${formatNumber(currentPrice, 2)}`}
                                     </td>
-                                    <td
-                                        className={
-                                            parseFloat(coin.changePercent24Hr) > 0 ? styles.changeUp : styles.changeDown
-                                        }
-                                    >
-                                        {parseFloat(coin.changePercent24Hr).toFixed(2)}%
-                                    </td>
+                                    <td className={changeClass}>{changePercent.toFixed(2)}%</td>
                                     <td>
                                         {activeTab === 'KRW'
                                             ? `${formatNumber(

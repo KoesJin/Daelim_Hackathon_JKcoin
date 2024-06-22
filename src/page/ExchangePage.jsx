@@ -3,7 +3,8 @@ import axios from 'axios';
 import { CSSTransition } from 'react-transition-group';
 import ExChangePageHeader from '../component/ExChangePage/Header/ExChangePageHeader';
 import ExChangePageMid from '../component/ExChangePage/Mid/ExChangePageMid';
-import styles from '../css/ExChangePage/Loading/ExchangePageLoading.module.css';
+import LoadingComponent from '../component/LoadingPage/LoadingComponent'; // 새로 추가된 로딩 컴포넌트
+import styles from '../css/Loading/Loading.module.css';
 
 const ExchangePage = () => {
     const [exchangeRate, setExchangeRate] = useState(null);
@@ -162,11 +163,7 @@ const ExchangePage = () => {
             >
                 <ExChangePageMid exchangeRate={exchangeRate} cryptoData={cryptoData} priceChanges={priceChanges} />
             </CSSTransition>
-            {loading && (
-                <div className={styles.loading}>
-                    <div className={styles.spinner}></div>
-                </div>
-            )}
+            {loading && <LoadingComponent />}
             {error && <div className={styles.error}>{error}</div>}
         </>
     );

@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet';
 import { createGlobalStyle } from 'styled-components';
 import styled from 'styled-components';
 import Footer from './component/GlobalFooter/Footer';
+import LoadingComponent from './component/LoadingPage/LoadingComponent'; // 새로 추가된 로딩 컴포넌트
 
 // 전역 스타일 정의
 const GlobalStyles = createGlobalStyle`
@@ -13,7 +14,12 @@ const GlobalStyles = createGlobalStyle`
     padding: 0;
     color: #ffffff; /* 텍스트 색상 */
     background-color: rgb(40, 40, 40); 
-    overflow: hidden; /* 스크롤을 막음 */
+    overflow-x: hidden; /* 가로 스크롤 막음 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 
   html {
@@ -46,6 +52,7 @@ const AnimationContainer = styled.div`
     flex: 1;
     width: 100%;
     overflow-y: auto; /* 컨텐츠 영역의 스크롤 허용 */
+    -webkit-overflow-scrolling: touch; /* 터치 스크롤링을 부드럽게 함 */
 `;
 
 const PageContainer = styled.div`
@@ -57,7 +64,6 @@ const PageContainer = styled.div`
     flex-direction: column;
     background-color: rgb(40, 40, 50);
     box-sizing: border-box; /* border를 박스 모델에 포함 */
-    overflow: hidden; /* PageContainer의 스크롤을 없앰 */
 `;
 
 const Overlay = styled.div`
@@ -82,8 +88,8 @@ const Overlay = styled.div`
 function Root() {
     const location = useLocation();
     const [isLandscape, setIsLandscape] = useState(false);
+    const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
-    // 로그인 페이지 경로를 확인
     const isLoginPage =
         location.pathname.toLowerCase() === '/loginpage' || location.pathname.toLowerCase() === '/signup';
 
@@ -104,6 +110,37 @@ function Root() {
         };
     }, []);
 
+    useEffect(() => {
+        document.body.style.cssText = `
+            position: fixed; 
+            top: -${window.scrollY}px;
+            overflow-y: hidden; /* 세로 스크롤 막음 */
+            width: 100%;`;
+        return () => {
+            const scrollY = document.body.style.top;
+            document.body.style.cssText = '';
+            window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+        };
+    }, []);
+
+    useEffect(() => {
+        const handleTouchMove = (e) => {
+            if (!e.target.closest('.scrollable')) {
+                e.preventDefault();
+            }
+        };
+
+        document.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+        return () => {
+            document.removeEventListener('touchmove', handleTouchMove);
+        };
+    }, []);
+
+    useEffect(() => {
+        setLoading(false); // 페이지 로딩 완료 시 로딩 상태를 false로 설정
+    }, [location.pathname]);
+
     return (
         <>
             <Helmet>
@@ -113,12 +150,13 @@ function Root() {
             <PageContainer className="page-container">
                 <TransitionGroup>
                     <CSSTransition classNames="fade" timeout={300} key={location.key}>
-                        <AnimationContainer>
+                        <AnimationContainer className="scrollable">
                             <Outlet />
                         </AnimationContainer>
                     </CSSTransition>
                 </TransitionGroup>
                 {!isLoginPage && <Footer />} {/* 로그인 페이지가 아닌 경우에만 Footer 렌더링 */}
+                {!isLoginPage && loading && <LoadingComponent />} {/* 로그인 페이지가 아닌 경우에만 로딩 화면 렌더링 */}
             </PageContainer>
             <Overlay visible={isLandscape}>기기를 세로로 돌려주세요.</Overlay>
         </>

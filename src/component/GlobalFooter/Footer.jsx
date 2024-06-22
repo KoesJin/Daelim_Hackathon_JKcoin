@@ -1,9 +1,33 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import styles from '../../css/Footer/Footer.module.css';
 
 function Footer() {
-    const [activeButton, setActiveButton] = useState('거래소');
+    const location = useLocation();
+    const [activeButton, setActiveButton] = useState('');
+
+    useEffect(() => {
+        // URL 경로를 기반으로 activeButton 상태 설정
+        switch (location.pathname) {
+            case '/':
+                setActiveButton('거래소');
+                break;
+            case '/mycoinpage':
+                setActiveButton('코인정보');
+                break;
+            case '/investments':
+                setActiveButton('투자내역');
+                break;
+            case '/deposits':
+                setActiveButton('입출금');
+                break;
+            case '/more':
+                setActiveButton('더보기');
+                break;
+            default:
+                setActiveButton('');
+        }
+    }, [location.pathname]);
 
     return (
         <footer className={styles.footerContainer}>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { Helmet } from 'react-helmet';
 import { createGlobalStyle } from 'styled-components';
@@ -87,6 +87,7 @@ const Overlay = styled.div`
 
 function Root() {
     const location = useLocation();
+    const navigate = useNavigate();
     const [isLandscape, setIsLandscape] = useState(false);
     const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
@@ -112,10 +113,10 @@ function Root() {
 
     useEffect(() => {
         document.body.style.cssText = `
-            position: fixed; 
-            top: -${window.scrollY}px;
-            overflow-y: hidden; /* 세로 스크롤 막음 */
-            width: 100%;`;
+      position: fixed; 
+      top: -${window.scrollY}px;
+      overflow-y: hidden; /* 세로 스크롤 막음 */
+      width: 100%;`;
         return () => {
             const scrollY = document.body.style.top;
             document.body.style.cssText = '';
@@ -138,8 +139,16 @@ function Root() {
     }, []);
 
     useEffect(() => {
-        setLoading(false); // 페이지 로딩 완료 시 로딩 상태를 false로 설정
-    }, [location.pathname]);
+        const checkLoginStatus = () => {
+            const token = localStorage.getItem('user_key');
+            if (!token && !isLoginPage) {
+                navigate('/loginpage');
+            }
+            setLoading(false);
+        };
+
+        checkLoginStatus();
+    }, [location.pathname, navigate, isLoginPage]);
 
     return (
         <>
@@ -151,12 +160,11 @@ function Root() {
                 <TransitionGroup>
                     <CSSTransition classNames="fade" timeout={300} key={location.key}>
                         <AnimationContainer className="scrollable">
-                            <Outlet />
+                            {loading ? <LoadingComponent /> : <Outlet />}
                         </AnimationContainer>
                     </CSSTransition>
                 </TransitionGroup>
-                {!isLoginPage && <Footer />} {/* 로그인 페이지가 아닌 경우에만 Footer 렌더링 */}
-                {!isLoginPage && loading && <LoadingComponent />} {/* 로그인 페이지가 아닌 경우에만 로딩 화면 렌더링 */}
+                {!isLoginPage && !loading && <Footer />} {/* 로그인 페이지가 아닌 경우에만 Footer 렌더링 */}
             </PageContainer>
             <Overlay visible={isLandscape}>기기를 세로로 돌려주세요.</Overlay>
         </>

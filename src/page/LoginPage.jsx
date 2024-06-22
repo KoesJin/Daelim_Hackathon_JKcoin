@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import styles from '../css/LoginPage/LoginPage.module.css';
+import logo from '../img/LoginJkCoin.png'; // 로고 이미지 경로를 맞게 수정하세요
 
 const LoginPage = () => {
     if (localStorage.getItem('user_key') === 'null') {
@@ -52,7 +53,10 @@ const LoginPage = () => {
 
     return (
         <div className={styles.container}>
-            <h2 className={styles.title}>JK Coin</h2>
+            <div className={styles.titleContainer}>
+                <img src={logo} alt="JK Coin Logo" className={styles.logo} />
+                <h2 className={styles.title}>JK Coin</h2>
+            </div>
             <form onSubmit={handleSubmit} className={styles.form}>
                 <input
                     type="text"

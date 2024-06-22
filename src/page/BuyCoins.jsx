@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -8,24 +8,25 @@ export default function BuyCoins() {
     const [currentPrice, setCurrentPrice] = useState(null);
     const [numberOfCoins, setNumberOfCoins] = useState('');
     const [totalPurchasePrice, setTotalPurchasePrice] = useState(0);
-    const [walletBalance, setWalletBalance] = useState(0); // State to hold wallet balance
-    const [showBuyForm, setShowBuyForm] = useState(false); // State to toggle buy form
-    const [showSellForm, setShowSellForm] = useState(false); // State to toggle sell form
-    const [ownedCoins, setOwnedCoins] = useState(null); // State to hold owned coins
+    const [walletBalance, setWalletBalance] = useState(0); // 지갑 잔액을 저장할 상태
+    const [showBuyForm, setShowBuyForm] = useState(false); // 매수 폼을 토글할 상태
+    const [showSellForm, setShowSellForm] = useState(false); // 매도 폼을 토글할 상태
+    const [ownedCoins, setOwnedCoins] = useState(null); // 보유 코인을 저장할 상태
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const coinName = searchParams.get('coinName');
+    const chartRef = useRef(null); // Chart 인스턴스를 저장할 ref
 
     useEffect(() => {
         const fetchChartData = async () => {
             try {
                 const response = await fetch(`https://api.coincap.io/v2/assets/${coinName}/history?interval=d1`);
                 if (!response.ok) {
-                    throw new Error('Failed to fetch data');
+                    throw new Error('데이터를 불러오는데 실패했습니다');
                 }
                 const data = await response.json();
                 if (data?.data?.length > 0) {
-                    // Transform data to Chart.js format
+                    // 데이터를 Chart.js 형식으로 변환
                     const labels = data.data.map((entry) => new Date(entry.time).toLocaleDateString());
                     const prices = data.data.map((entry) => parseFloat(entry.priceUsd));
 
@@ -33,7 +34,7 @@ export default function BuyCoins() {
                         labels: labels,
                         datasets: [
                             {
-                                label: 'Price (USD)',
+                                label: '가격 (USD)',
                                 data: prices,
                                 borderColor: 'rgba(75, 192, 192, 1)',
                                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -43,7 +44,7 @@ export default function BuyCoins() {
                     });
                 }
             } catch (error) {
-                console.error('Error fetching chart data:', error);
+                console.error('차트 데이터를 불러오는 중 오류가 발생했습니다:', error);
             }
         };
 
@@ -55,12 +56,12 @@ export default function BuyCoins() {
             try {
                 const response = await fetch(`https://api.coincap.io/v2/assets/${coinName}`);
                 if (!response.ok) {
-                    throw new Error('Failed to fetch data');
+                    throw new Error('데이터를 불러오는데 실패했습니다');
                 }
                 const data = await response.json();
-                setCurrentPrice(parseFloat(data?.data?.priceUsd).toFixed(8)); // Format to 8 decimal places
+                setCurrentPrice(parseFloat(data?.data?.priceUsd).toFixed(8)); // 소수점 8자리로 포맷팅
             } catch (error) {
-                console.error('Error fetching current price:', error);
+                console.error('현재 가격을 불러오는 중 오류가 발생했습니다:', error);
             }
         };
 
@@ -68,18 +69,18 @@ export default function BuyCoins() {
     }, [coinName]);
 
     useEffect(() => {
-        // Fetch wallet balance from your local server
+        // 지갑 잔액을 서버에서 가져오기
         const fetchWalletBalance = async () => {
             try {
-                // Get user_key from localStorage
+                // 로컬 스토리지에서 user_key 가져오기
                 const user_key = localStorage.getItem('user_key');
                 if (!user_key) {
-                    throw new Error('User key not found in localStorage');
+                    throw new Error('로컬 스토리지에서 사용자 키를 찾을 수 없습니다');
                 }
 
                 let baseURL = '';
                 if (process.env.NODE_ENV === 'development') {
-                    // If in development environment, use local IP
+                    // 개발 환경에서 로컬 IP 사용
                     baseURL = 'http://121.139.20.242:5011';
                 }
 
@@ -90,28 +91,29 @@ export default function BuyCoins() {
                 if (response.data.valid) {
                     setWalletBalance(response.data.krw);
                 } else {
-                    console.log('Invalid user or user key');
+                    console.log('유효하지 않은 사용자 또는 사용자 키입니다');
                 }
             } catch (error) {
-                console.error('Error fetching wallet balance:', error);
+                console.error('지갑 잔액을 불러오는 중 오류가 발생했습니다:', error);
             }
         };
 
         fetchWalletBalance();
     }, []);
+
     useEffect(() => {
-        // Fetch number of coins owned
+        // 보유 코인 수를 서버에서 가져오기
         const fetchOwnedCoins = async () => {
             try {
-                // Get user_key from localStorage
+                // 로컬 스토리지에서 user_key 가져오기
                 const user_key = localStorage.getItem('user_key');
                 if (!user_key) {
-                    throw new Error('User key not found in localStorage');
+                    throw new Error('로컬 스토리지에서 사용자 키를 찾을 수 없습니다');
                 }
 
                 let baseURL = '';
                 if (process.env.NODE_ENV === 'development') {
-                    // If in development environment, use local IP
+                    // 개발 환경에서 로컬 IP 사용
                     baseURL = 'http://121.139.20.242:5011';
                 }
 
@@ -124,10 +126,10 @@ export default function BuyCoins() {
                     setOwnedCoins(response.data.numberOfCoins.toFixed(8));
                 } else {
                     setOwnedCoins(null);
-                    console.log('No coins owned for this type');
+                    console.log('해당 유형의 보유 코인이 없습니다');
                 }
             } catch (error) {
-                console.error('Error fetching number of coins:', error);
+                console.error('보유 코인 수를 불러오는 중 오류가 발생했습니다:', error);
             }
         };
 
@@ -136,8 +138,11 @@ export default function BuyCoins() {
 
     useEffect(() => {
         if (chartData) {
+            if (chartRef.current) {
+                chartRef.current.destroy(); // 기존 Chart 인스턴스 삭제
+            }
             const ctx = document.getElementById('coinChart').getContext('2d');
-            new Chart(ctx, {
+            chartRef.current = new Chart(ctx, {
                 type: 'line',
                 data: chartData,
                 options: {
@@ -157,49 +162,54 @@ export default function BuyCoins() {
                             display: true,
                             title: {
                                 display: true,
-                                text: 'Date',
+                                text: '날짜',
                             },
                         },
                         y: {
                             display: true,
                             title: {
                                 display: true,
-                                text: 'Price (USD)',
+                                text: '가격 (USD)',
                             },
                         },
                     },
                 },
             });
         }
+        return () => {
+            if (chartRef.current) {
+                chartRef.current.destroy(); // 컴포넌트 언마운트 시 Chart 인스턴스 삭제
+            }
+        };
     }, [chartData]);
 
     const handlePercentageClick = (percentage, actionType) => {
-        // Calculate total amount and coins
+        // 총 금액과 코인 수 계산
         const totalAmount = (walletBalance * percentage) / 100;
         const coins = totalAmount / parseFloat(currentPrice);
 
-        // Update state based on actionType
+        // actionType에 따라 상태 업데이트
         if (actionType === 'buy') {
             if (totalAmount > walletBalance) {
                 setNumberOfCoins('');
                 setTotalPurchasePrice(0);
-                alert('Insufficient balance to make this purchase.');
+                alert('이 구매를 완료하기에 잔액이 부족합니다.');
             } else {
-                setNumberOfCoins(coins.toFixed(8)); // Convert to string with fixed decimals
-                setTotalPurchasePrice(parseFloat(totalAmount.toFixed(2))); // Convert to number with fixed decimals
+                setNumberOfCoins(coins.toFixed(8)); // 고정 소수점으로 변환
+                setTotalPurchasePrice(parseFloat(totalAmount.toFixed(2))); // 고정 소수점으로 변환
             }
         } else if (actionType === 'sell') {
             if (ownedCoins === null || parseFloat(ownedCoins) === 0) {
                 setNumberOfCoins('');
                 setTotalPurchasePrice(0);
-                alert('You do not own any coins to sell.');
+                alert('판매할 코인이 없습니다.');
                 return;
             }
-            // Calculate coins based on percentage of ownedCoins
+            // 보유 코인의 비율에 따른 코인 수 계산
             const coinsToSell = (parseFloat(ownedCoins) * percentage) / 100;
-            setNumberOfCoins(coinsToSell.toFixed(8)); // Convert to string with fixed decimals
+            setNumberOfCoins(coinsToSell.toFixed(8)); // 고정 소수점으로 변환
             const totalPrice = parseFloat(currentPrice) * coinsToSell;
-            setTotalPurchasePrice(parseFloat(totalPrice.toFixed(2))); // Convert to number with fixed decimals
+            setTotalPurchasePrice(parseFloat(totalPrice.toFixed(2))); // 고정 소수점으로 변환
         }
     };
 
@@ -207,14 +217,14 @@ export default function BuyCoins() {
         const coins = e.target.value;
         const totalPrice = parseFloat(currentPrice) * parseFloat(coins);
 
-        // Update state
+        // 상태 업데이트
         if (totalPrice > walletBalance) {
             setNumberOfCoins('');
             setTotalPurchasePrice(0);
-            alert('Insufficient balance to make this purchase.');
+            alert('이 구매를 완료하기에 잔액이 부족합니다.');
         } else {
             setNumberOfCoins(coins);
-            setTotalPurchasePrice(totalPrice); // Ensure totalPurchasePrice is a number
+            setTotalPurchasePrice(totalPrice); // totalPurchasePrice가 숫자인지 확인
         }
     };
 
@@ -222,26 +232,26 @@ export default function BuyCoins() {
         e.preventDefault();
         const totalPrice = parseFloat(currentPrice) * parseFloat(numberOfCoins);
 
-        // Check if user has enough balance to make the purchase
+        // 구매를 완료하기에 잔액이 충분한지 확인
         if (totalPrice > walletBalance) {
-            alert('Insufficient balance to make this purchase.');
+            alert('이 구매를 완료하기에 잔액이 부족합니다.');
             return;
         }
 
         try {
-            // Get user_key from localStorage
+            // 로컬 스토리지에서 user_key 가져오기
             const user_key = localStorage.getItem('user_key');
             if (!user_key) {
-                throw new Error('User key not found in localStorage');
+                throw new Error('로컬 스토리지에서 사용자 키를 찾을 수 없습니다');
             }
 
             let baseURL = '';
             if (process.env.NODE_ENV === 'development') {
-                // If in development environment, use local IP
+                // 개발 환경에서 로컬 IP 사용
                 baseURL = 'http://121.139.20.242:5011';
             }
 
-            // Make API call to complete the purchase
+            // API 호출을 통해 구매 완료
             const response = await axios.post(`${baseURL}/api/buy_coins`, {
                 user_key,
                 coinName,
@@ -250,17 +260,17 @@ export default function BuyCoins() {
             });
 
             if (response.data.success) {
-                alert('Purchase successful!');
+                alert('구매 성공!');
                 setWalletBalance(walletBalance - totalPrice);
                 setNumberOfCoins('');
                 setTotalPurchasePrice(0);
                 window.location.reload();
             } else {
-                alert('Purchase failed. Please try again.');
+                alert('구매 실패. 다시 시도해주세요.');
             }
         } catch (error) {
-            console.error('Error during purchase:', error);
-            alert('An error occurred during purchase. Please try again.');
+            console.error('구매 중 오류가 발생했습니다:', error);
+            alert('구매 중 오류가 발생했습니다. 다시 시도해주세요.');
         }
     };
 
@@ -268,35 +278,35 @@ export default function BuyCoins() {
         e.preventDefault();
 
         try {
-            // Get user_key from localStorage
+            // 로컬 스토리지에서 user_key 가져오기
             const user_key = localStorage.getItem('user_key');
             if (!user_key) {
-                throw new Error('User key not found in localStorage');
+                throw new Error('로컬 스토리지에서 사용자 키를 찾을 수 없습니다');
             }
 
             let baseURL = '';
             if (process.env.NODE_ENV === 'development') {
-                // If in development environment, use local IP
+                // 개발 환경에서 로컬 IP 사용
                 baseURL = 'http://121.139.20.242:5011';
             }
 
-            // Make API call to get the number of coins owned (already handled in useEffect)
+            // 보유 코인 수를 가져오기 위한 API 호출
             if (ownedCoins === null || parseFloat(ownedCoins) === 0) {
                 setNumberOfCoins('');
-                alert('You do not own any coins of this type.');
+                alert('이 유형의 코인이 없습니다.');
                 return;
             }
 
-            // Proceed with sell logic using numberOfCoins state
+            // numberOfCoins 상태를 사용하여 판매 로직 진행
             const totalPrice = parseFloat(currentPrice) * parseFloat(numberOfCoins);
 
-            // Check if user has enough coins to make the sale
+            // 판매를 완료하기에 충분한 코인이 있는지 확인
             if (parseFloat(numberOfCoins) > parseFloat(ownedCoins)) {
-                alert('You do not have enough coins to sell this amount.');
+                alert('이 양의 코인을 판매할 충분한 코인이 없습니다.');
                 return;
             }
 
-            // Make API call to complete the sale
+            // 판매 완료를 위한 API 호출
             const response = await axios.post(`${baseURL}/api/sell_coins`, {
                 user_key,
                 coinName,
@@ -305,33 +315,33 @@ export default function BuyCoins() {
             });
 
             if (response.data.success) {
-                alert('Sale successful!');
+                alert('판매 성공!');
                 setWalletBalance(walletBalance + totalPrice);
                 setNumberOfCoins('');
                 setTotalPurchasePrice(0);
                 window.location.reload();
             } else {
-                alert('Sale failed. Please try again.');
+                alert('판매 실패. 다시 시도해주세요.');
             }
         } catch (error) {
-            console.error('Error during sale:', error);
-            alert('An error occurred during sale. Please try again.');
+            console.error('판매 중 오류가 발생했습니다:', error);
+            alert('판매 중 오류가 발생했습니다. 다시 시도해주세요.');
         }
     };
 
     const toggleBuyForm = () => {
         setShowBuyForm(!showBuyForm);
-        setShowSellForm(false); // Hide sell form when toggling buy form
+        setShowSellForm(false); // 매수 폼을 토글할 때 매도 폼 숨기기
     };
 
     const toggleSellForm = () => {
         setShowSellForm(!showSellForm);
-        setShowBuyForm(false); // Hide buy form when toggling sell form
+        setShowBuyForm(false); // 매도 폼을 토글할 때 매수 폼 숨기기
     };
 
     return (
         <div>
-            <h2>Price Chart</h2>
+            <h2>가격 차트</h2>
             <div>
                 <canvas id="coinChart" width={600} height={400}></canvas>
             </div>
@@ -346,30 +356,29 @@ export default function BuyCoins() {
                     <p>보유 금액: ${walletBalance}</p>
                     <form onSubmit={handleBuy}>
                         <label>
-                            갯수를 입력하세요.:
+                            갯수를 입력하세요:
                             <input type="text" value={numberOfCoins} onChange={handleChange} />
                         </label>
                         <br />
                         <button type="button" onClick={() => handlePercentageClick(10, 'buy')}>
-                            10% Buy
+                            10% 매수
                         </button>
                         <button type="button" onClick={() => handlePercentageClick(25, 'buy')}>
-                            25% Buy
+                            25% 매수
                         </button>
                         <button type="button" onClick={() => handlePercentageClick(50, 'buy')}>
-                            50% Buy
+                            50% 매수
                         </button>
                         <button type="button" onClick={() => handlePercentageClick(75, 'buy')}>
-                            75% Buy
+                            75% 매수
                         </button>
                         <button type="button" onClick={() => handlePercentageClick(100, 'buy')}>
-                            100% Buy
+                            100% 매수
                         </button>
                         <br />
                         <p>
                             총 금액: ${typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(2) : '0.00'}
                         </p>
-                        {/* Display totalPurchasePrice */}
                         <br />
                         <button type="submit">매수</button>
                     </form>
@@ -382,30 +391,29 @@ export default function BuyCoins() {
                     <p>보유 코인: {ownedCoins ? ownedCoins : '0'}</p>
                     <form onSubmit={handleSell}>
                         <label>
-                            갯수를 입력하세요.:
+                            갯수를 입력하세요:
                             <input type="text" value={numberOfCoins} onChange={handleChange} />
                         </label>
                         <br />
                         <button type="button" onClick={() => handlePercentageClick(10, 'sell')}>
-                            10% Sell
+                            10% 매도
                         </button>
                         <button type="button" onClick={() => handlePercentageClick(25, 'sell')}>
-                            25% Sell
+                            25% 매도
                         </button>
                         <button type="button" onClick={() => handlePercentageClick(50, 'sell')}>
-                            50% Sell
+                            50% 매도
                         </button>
                         <button type="button" onClick={() => handlePercentageClick(75, 'sell')}>
-                            75% Sell
+                            75% 매도
                         </button>
                         <button type="button" onClick={() => handlePercentageClick(100, 'sell')}>
-                            100% Sell
+                            100% 매도
                         </button>
                         <br />
                         <p>
                             총 금액: ${typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(2) : '0.00'}
                         </p>
-                        {/* Display totalPurchasePrice */}
                         <br />
                         <button type="submit">매도</button>
                     </form>

@@ -27,6 +27,7 @@
     transition: background-color 0.3s ease, color 0.3s ease; /* 배경색과 글자색의 전환 효과 */
     cursor: pointer;
     font-family: 'Noto Sans KR', sans-serif;
+    text-decoration: none;
 }
 
 .footerButton.active {

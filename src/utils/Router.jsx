@@ -7,7 +7,8 @@ import LoginPage from '../page/LoginPage';
 import ExchangePage from '../page/ExchangePage';
 import SignupPage from '../page/SignupPage';
 import AdminPage from '../page/AdminPage';
-import ErrorPage from '../page/ErrorPage'; // 에러 페이지 임포트
+import ErrorPage from '../page/ErrorPage';
+import MyCoinPage from '../page/MyCoinPage';
 
 const router = createBrowserRouter(
     [
@@ -35,6 +36,10 @@ const router = createBrowserRouter(
                 {
                     path: '/adminPage',
                     element: <AdminPage />,
+                },
+                {
+                    path: '/mycoinpage',
+                    element: <MyCoinPage />,
                 },
             ],
         },

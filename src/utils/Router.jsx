@@ -7,12 +7,14 @@ import LoginPage from '../page/LoginPage';
 import ExchangePage from '../page/ExchangePage';
 import SignupPage from '../page/SignupPage';
 import AdminPage from '../page/AdminPage';
+import ErrorPage from '../page/ErrorPage'; // 에러 페이지 임포트
 
 const router = createBrowserRouter(
     [
         {
             path: '/',
             element: <Root />,
+            errorElement: <ErrorPage />, // 에러 페이지 설정
             children: [
                 {
                     path: '',

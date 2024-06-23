@@ -12,7 +12,6 @@ const MyCoinPage = () => {
     const [exchangeRates, setExchangeRates] = useState({});
     const [isDataReady, setIsDataReady] = useState(false);
 
-    // convertUSDToKRW 함수를 useCallback으로 정의
     const convertUSDToKRW = useCallback(
         (usdAmount) => {
             const exchangeRate = exchangeRates['KRW'];
@@ -24,7 +23,6 @@ const MyCoinPage = () => {
         [exchangeRates]
     );
 
-    // calculateTotals 함수를 useCallback으로 정의
     const calculateTotals = useCallback(() => {
         let totalPurchased = 0;
         let totalPurchased2add = 0;
@@ -59,7 +57,6 @@ const MyCoinPage = () => {
                     baseURL = 'http://121.139.20.242:5011';
                 }
 
-                // Fetch user's total holdings
                 const holdingsResponse = await axios.post(`${baseURL}/api/key_money`, {
                     user_key: userKey,
                 });
@@ -71,7 +68,6 @@ const MyCoinPage = () => {
                     return;
                 }
 
-                // Fetch user's total coin values and set coin data for rendering
                 const totalValueResponse = await axios.post(`${baseURL}/api/total_coin_value`, {
                     user_key: userKey,
                 });
@@ -79,10 +75,8 @@ const MyCoinPage = () => {
                 if (totalValueResponse.data.valid) {
                     setCoinData(totalValueResponse.data.totalCoinData);
 
-                    // Fetch current prices for each coin
                     await fetchCurrentPrices(totalValueResponse.data.totalCoinData);
 
-                    // Set isDataReady to true after fetching current prices and exchange rates
                     setIsDataReady(true);
                 } else {
                     console.error('Invalid user_key for total coin value');
@@ -112,7 +106,6 @@ const MyCoinPage = () => {
 
             setCurrentPrices(prices);
 
-            // Fetch exchange rates
             const exchangeRateResponse = await axios.get('https://api.exchangerate-api.com/v4/latest/USD');
 
             if (exchangeRateResponse.data && exchangeRateResponse.data.rates) {
@@ -129,11 +122,11 @@ const MyCoinPage = () => {
         if (isDataReady) {
             calculateTotals();
         }
-    }, [isDataReady, currentPrices, exchangeRates, calculateTotals]); // Recalculate totals when data is ready or currentPrices/exchangeRates change
+    }, [isDataReady, currentPrices, exchangeRates, calculateTotals]);
 
     const formatNumber = (number, decimals = 0) => {
         if (number === undefined || number === null) {
-            return ''; // Or handle as per your application's logic
+            return '';
         }
 
         return number.toLocaleString('ko-KR', {
@@ -155,10 +148,12 @@ const MyCoinPage = () => {
             <div className={styles.assetDetails}>
                 <h2>보유 자산(KRW): {formatNumber(holdings, 0)} KRW</h2>
                 <h2>코인의 총 가치(KRW): {formatNumber(totalPurchased, 0)} KRW</h2>
-                <h2 className={styles.profit}>총 손익: {formatNumber(totalProfit, 4)}%</h2>
+                <h2 className={totalProfit > 0 ? styles.profit : totalProfit < 0 ? styles.loss : styles.neutral}>
+                    총 손익: {formatNumber(totalProfit, 4)}%
+                </h2>
             </div>
             <div className={styles.coinsList}>
-                <h2>보유 코인</h2>
+                <div className={styles.Midtitle}>보유 코인</div>
                 <div className={styles.tableContainer}>
                     <table className={styles.coinTable}>
                         <thead>
@@ -180,28 +175,34 @@ const MyCoinPage = () => {
                                     const percentageChange =
                                         totalAmount === 0
                                             ? '0%'
-                                            : formatNumber(
-                                                  ((totalValue - (coin.totalPurchased - coin.totalSold)) /
-                                                      (coin.totalPurchased - coin.totalSold)) *
-                                                      100,
-                                                  4
-                                              ) + '%';
+                                            : ((totalValue - (coin.totalPurchased - coin.totalSold)) /
+                                                  (coin.totalPurchased - coin.totalSold)) *
+                                              100;
+                                    const profitClass =
+                                        percentageChange > 0
+                                            ? styles.profit
+                                            : percentageChange < 0
+                                            ? styles.loss
+                                            : styles.neutral;
 
                                     return (
                                         <tr key={coin.coinName}>
                                             <td>
-                                                <Link to={`/buycoins?coinName=${encodeURIComponent(coin.coinName)}`}>
+                                                <Link
+                                                    to={`/buycoins?coinName=${encodeURIComponent(coin.coinName)}`}
+                                                    className={styles.link}
+                                                >
                                                     {coin.coinName}
                                                 </Link>
                                             </td>
                                             <td>{formatNumber(totalAmount, 4)}</td>
                                             <td>{formatNumber(convertedPrice, 4)}</td>
                                             <td>{formatNumber(totalValue, 4)}</td>
-                                            <td>{percentageChange}</td>
+                                            <td className={profitClass}>{formatNumber(percentageChange, 4)}%</td>
                                         </tr>
                                     );
                                 }
-                                return null; // 반환값이 없을 경우 null 반환
+                                return null;
                             })}
                         </tbody>
                     </table>

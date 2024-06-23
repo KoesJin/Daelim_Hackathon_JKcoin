@@ -4,6 +4,7 @@ import styles from '../../../css/ExChangePage/Header/ExChangePageHeader.module.c
 import { ReactComponent as SettingsIcon } from '../../../svg/ExChangePage/Header/settings.svg';
 import { ReactComponent as NotificationsIcon } from '../../../svg/ExChangePage/Header/notifications.svg';
 import SettingsModal from '../../SettingsIcon/SettingsModal';
+import { Link } from 'react-router-dom';
 
 function ExChangePageHeader({ onModalChange }) {
     const [showModal, setShowModal] = useState(false);
@@ -29,7 +30,9 @@ function ExChangePageHeader({ onModalChange }) {
                 </div>
                 <div className={styles.headerRight}>
                     <SettingsIcon className={styles.icon} onClick={openModal} />
-                    <NotificationsIcon className={styles.icon} />
+                    <Link to="/investments">
+                        <NotificationsIcon className={styles.icon} />
+                    </Link>
                 </div>
                 {showModal && <SettingsModal onClose={closeModal} />}
             </header>

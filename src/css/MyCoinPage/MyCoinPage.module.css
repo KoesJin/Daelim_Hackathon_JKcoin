@@ -1,11 +1,13 @@
-/* MyCoinPage.module.css */
-
 .container {
     background-color: #282832;
     color: white;
-    padding: 20px;
+    padding: 20px 0; /* 양옆 패딩 제거 */
+    padding-top: 20px; /* 상단 패딩 유지 */
+    padding-bottom: 20px; /* 하단 패딩 유지 */
     height: 100vh;
     font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
@@ -14,48 +16,67 @@
     align-items: center;
     padding-bottom: 10px;
     border-bottom: 1px solid #30363d;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .title {
     font-size: 1.5rem;
     font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.Midtitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    position: sticky;
+    top: 0;
+    background-color: #282832;
+    z-index: 1;
 }
 
 .totalAssets {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    padding: 10px 20px; /* 이 섹션에 양옆 패딩 추가 */
     border-bottom: 1px solid #30363d;
 }
 
 .assetDetails {
-    padding: 10px 0;
+    padding: 10px 20px; /* 이 섹션에 양옆 패딩 추가 */
     border-bottom: 1px solid #30363d;
 }
 
 .coinsList {
     margin-top: 20px;
-    overflow-y: auto; /* Enable vertical scrolling */
-    max-height: 50vh; /* Adjust the height as needed */
+    overflow-y: auto; /* 세로 스크롤 활성화 */
+    flex-grow: 1;
 }
 
 .tableContainer {
-    overflow-x: auto; /* Enable horizontal scrolling if needed */
+    overflow-y: auto; /* 가로 스크롤 활성화 */
+    width: 100%;
 }
 
 .coinTable {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    padding: 0; /* 양옆 패딩 제거 */
+    height: 80vh;
 }
 
 .coinTable th,
 .coinTable td {
-    padding: 10px;
+    padding: 10px 0; /* 패딩 값 조정 */
     border-bottom: 1px solid #30363d;
-    text-align: left;
-    white-space: nowrap; /* Prevent text from wrapping */
+    text-align: center;
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -69,15 +90,23 @@
 }
 
 .profit {
-    color: #cd0c22; /* Red color for positive profit */
+    color: #cd0c22; /* 양수일 때 빨간색 */
 }
 
 .loss {
-    color: #467ed4; /* Blue color for negative profit */
+    color: #467ed4; /* 음수일 때 파란색 */
+}
+
+.neutral {
+    color: white; /* 0일 때 흰색 */
 }
 
 @media (max-width: 600px) {
     .title {
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+    .Midtitle {
         font-size: 1.3rem;
         font-weight: bold;
     }
@@ -89,6 +118,11 @@
     .coinTable th,
     .coinTable td {
         font-size: 12px;
-        padding: 6px;
+        padding: 6px 0; /* 작은 화면에서 패딩 값 조정 */
     }
+}
+
+.link {
+    text-decoration: none;
+    color: white;
 }

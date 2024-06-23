@@ -15,15 +15,15 @@ const GlobalStyles = createGlobalStyle`
     color: #ffffff; /* 텍스트 색상 */
     background-color: rgb(40, 40, 40); 
     overflow-x: hidden; /* 가로 스크롤 막음 */
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    font-family: 'Noto Sans KR', sans-serif; /* 폰트 적용 */
   }
 
   html {
     overflow: hidden; /* 스크롤을 막음 */
+  }
+
+  * {
+    font-family: inherit; /* 모든 요소에 폰트 상속 */
   }
 
   .fade-enter {
@@ -46,6 +46,21 @@ const GlobalStyles = createGlobalStyle`
       height: calc(100vh - 2px); /* border로 인해 발생하는 높이 초과를 방지 */
     }
   }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Noto Sans KR', sans-serif; /* 타이틀 폰트 적용 */
+    font-weight: bold;
+  }
+
+  h2 {
+    font-size: 1.5em;
+  }
+
+  @media (max-width: 768px) {
+    h2 {
+      font-size: 1.3em;
+    }
+  }
 `;
 
 const AnimationContainer = styled.div`
@@ -64,6 +79,7 @@ const PageContainer = styled.div`
     flex-direction: column;
     background-color: rgb(40, 40, 50);
     box-sizing: border-box; /* border를 박스 모델에 포함 */
+    overflow-y: hidden; /* 상위 컨테이너에서 스크롤 막음 */
 `;
 
 const Overlay = styled.div`
@@ -112,31 +128,21 @@ function Root() {
     }, []);
 
     useEffect(() => {
-        document.body.style.cssText = `
-      position: fixed; 
-      top: -${window.scrollY}px;
-      overflow-y: hidden; /* 세로 스크롤 막음 */
-      width: 100%;`;
+        const scrollPositions = {};
+        const saveScrollPosition = () => {
+            scrollPositions[location.pathname] = window.scrollY;
+        };
+
+        const restoreScrollPosition = () => {
+            window.scrollTo(0, scrollPositions[location.pathname] || 0);
+        };
+
+        saveScrollPosition();
         return () => {
-            const scrollY = document.body.style.top;
-            document.body.style.cssText = '';
-            window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+            saveScrollPosition();
+            restoreScrollPosition();
         };
-    }, []);
-
-    useEffect(() => {
-        const handleTouchMove = (e) => {
-            if (!e.target.closest('.scrollable')) {
-                e.preventDefault();
-            }
-        };
-
-        document.addEventListener('touchmove', handleTouchMove, { passive: false });
-
-        return () => {
-            document.removeEventListener('touchmove', handleTouchMove);
-        };
-    }, []);
+    }, [location.pathname]);
 
     useEffect(() => {
         const checkLoginStatus = () => {

@@ -1,18 +1,17 @@
 .container {
     padding: 20px;
-    font-family: Arial, sans-serif;
-    background-color: rgb(34, 34, 42); /* 배경색 변경 */
-    color: white; /* 글자색 변경 */
-    position: relative; /* 위치 상대적 설정 */
-    overflow-y: auto; /* 세로 스크롤 허용 */
+    background-color: rgb(40, 40, 50);
+    color: white;
+    position: relative;
+    overflow-y: auto;
     height: calc(100vh - 10vh);
-    box-sizing: border-box; /* 패딩 포함한 높이 설정 */
+    box-sizing: border-box;
 }
 
 .backButton {
     position: absolute;
     top: 20px;
-    right: 20px; /* Back 버튼 오른쪽으로 이동 */
+    right: 20px;
     background: none;
     border: none;
     cursor: pointer;
@@ -24,14 +23,14 @@
 }
 
 .chartContainer {
-    width: 100%; /* 전체 너비 사용 */
-    height: 50vh; /* 차트 높이 설정 */
+    width: 100%;
+    height: 50vh;
     margin-bottom: 20px;
 }
 
 .canvas {
-    width: 100%; /* 차트의 너비를 100%로 설정 */
-    height: 100%; /* 차트의 높이를 100%로 설정 */
+    width: 100%;
+    height: 100%;
 }
 
 .buttonContainer {
@@ -42,24 +41,24 @@
 
 .actionButton {
     padding: 10px 20px;
-    background-color: #007bff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: rgb(40, 40, 50);
     color: white;
-    border: none;
     cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s ease; /* 부드러운 호버 효과 추가 */
+    transition: background-color 0.3s ease;
 }
 
 .actionButton:hover {
-    background-color: #0056b3;
+    background-color: rgb(116, 120, 240);
 }
 
 .formContainer {
-    background-color: #1f1f1f; /* 폼 배경색 변경 */
+    background-color: #1f1f1f;
     padding: 20px;
     border-radius: 4px;
-    margin-bottom: 20px; /* 추가적인 공간 확보 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 부드러운 그림자 효과 추가 */
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 label {
@@ -69,12 +68,12 @@ label {
 }
 
 .buyCoinsInput {
-    width: 100%; /* 입력 상자의 너비를 100%로 변경 */
+    width: 75vw;
     padding: 10px;
     margin-bottom: 20px;
     border: 1px solid #666;
     border-radius: 4px;
-    font-size: 16px; /* 폰트 크기 증가 */
+    font-size: 16px;
     background-color: #2a2a2a;
     color: white;
 }
@@ -83,11 +82,11 @@ label {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 10px; /* 버튼 간격 추가 */
+    gap: 10px;
 }
 
 .buttonGroup button {
-    flex: 1 1 48%; /* 버튼 크기 조정 */
+    flex: 1 1 48%;
     margin: 5px 0;
     padding: 10px;
     background-color: #28a745;
@@ -95,7 +94,7 @@ label {
     border: none;
     cursor: pointer;
     border-radius: 4px;
-    transition: background-color 0.3s ease; /* 부드러운 호버 효과 추가 */
+    transition: background-color 0.3s ease;
 }
 
 .buttonGroup button:hover {
@@ -110,7 +109,7 @@ label {
     border: none;
     cursor: pointer;
     border-radius: 4px;
-    transition: background-color 0.3s ease; /* 부드러운 호버 효과 추가 */
+    transition: background-color 0.3s ease;
 }
 
 .submitButton:hover {
@@ -120,5 +119,18 @@ label {
 p {
     font-size: 16px;
     margin-bottom: 10px;
-    color: #c0c0c0; /* 글자색 변경 */
+    color: #c0c0c0;
+}
+
+/* 타이틀 스타일 */
+.BuyCoin_h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .BuyCoin_h2 {
+        font-size: 1.3em;
+        font-weight: bold;
+    }
 }

@@ -16,17 +16,20 @@ function ExChangePageHeader() {
     };
 
     return (
-        <header className={styles.header}>
-            <div className={styles.headerLeft}></div>
-            <div className={styles.headerCenter}>
-                <span className={styles.title}>거래소</span>
-            </div>
-            <div className={styles.headerRight}>
-                <SettingsIcon className={styles.icon} onClick={openModal} />
-                <NotificationsIcon className={styles.icon} />
-            </div>
-            {showModal && <SettingsModal onClose={closeModal} />}
-        </header>
+        <>
+            <header className={styles.header}>
+                <div className={styles.headerLeft}></div>
+                <div className={styles.headerCenter}>
+                    <span className={styles.title}>거래소</span>
+                </div>
+                <div className={styles.headerRight}>
+                    <SettingsIcon className={styles.icon} onClick={openModal} />
+                    <NotificationsIcon className={styles.icon} />
+                </div>
+                {showModal && <SettingsModal onClose={closeModal} />}
+            </header>
+            <div className={styles.content}></div>
+        </>
     );
 }
 

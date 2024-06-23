@@ -5,6 +5,10 @@
     padding: 10px 10px 0px 10px;
     background-color: rgb(40, 40, 50);
     color: white;
+    position: fixed; /* 상단 고정 */
+    width: 95%;
+    z-index: 1000; /* 다른 요소들보다 위에 위치 */
+    margin: 0 auto; /* 가운데 정렬 */
 }
 
 .headerLeft {
@@ -39,4 +43,8 @@
         font-size: 1.3rem;
         font-weight: bold;
     }
+}
+
+.content {
+    padding-top: 60px; /* 상단바 높이만큼 여백 추가 */
 }

@@ -359,7 +359,7 @@ export default function BuyCoins() {
             <Link to="/" className={styles.backButton}>
                 <BackIcon className={styles.backIcon} />
             </Link>
-            <h2>가격 차트</h2>
+            <h2 className={styles.BuyCoin_h2}>가격 차트</h2>
             <div className={styles.chartContainer}>
                 <canvas ref={chartContainerRef} id="coinChart" className={styles.canvas}></canvas>
             </div>
@@ -373,7 +373,7 @@ export default function BuyCoins() {
             </div>
             {showBuyForm && (
                 <div className={styles.formContainer}>
-                    <h2>매수 : {coinName}</h2>
+                    <h2 className={styles.BuyCoin_h2}>매수 : {coinName}</h2>
                     <p>코인 가격: {currentPrice} KRW</p>
                     <p>보유 금액: {walletBalance} KRW</p>
                     <form onSubmit={handleBuy}>
@@ -415,7 +415,7 @@ export default function BuyCoins() {
             )}
             {showSellForm && (
                 <div className={styles.formContainer}>
-                    <h2>매도 : {coinName}</h2>
+                    <h2 className={styles.BuyCoin_h2}>매도 : {coinName}</h2>
                     <p>코인 가격: {currentPrice} KRW</p>
                     <p>보유 코인: {ownedCoins ? ownedCoins : '0'}</p>
                     <form onSubmit={handleSell}>

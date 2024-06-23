@@ -1,0 +1,42 @@
+.errorPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgb(40, 40, 50);
+    color: #fff;
+    text-align: center;
+}
+
+.errorContent {
+    max-width: 600px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.errorTitle {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.errorMessage {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+
+.backButton {
+    padding: 10px 20px;
+    font-size: 1em;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.backButton:hover {
+    background-color: #0056b3;
+}

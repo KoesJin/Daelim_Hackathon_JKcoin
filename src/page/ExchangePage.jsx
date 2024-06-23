@@ -5,6 +5,7 @@ import ExChangePageHeader from '../component/ExChangePage/Header/ExChangePageHea
 import ExChangePageMid from '../component/ExChangePage/Mid/ExChangePageMid';
 import LoadingComponent from '../component/LoadingPage/LoadingComponent'; // 새로 추가된 로딩 컴포넌트
 import styles from '../css/Loading/Loading.module.css';
+import { useOutletContext } from 'react-router-dom';
 
 const ExchangePage = () => {
     const [exchangeRate, setExchangeRate] = useState(null);
@@ -12,6 +13,7 @@ const ExchangePage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [priceChanges, setPriceChanges] = useState({});
+    const { setIsModalOpen } = useOutletContext();
 
     const cryptoSymbols = useMemo(
         () => [
@@ -148,7 +150,7 @@ const ExchangePage = () => {
                 }}
                 unmountOnExit
             >
-                <ExChangePageHeader />
+                <ExChangePageHeader onModalChange={setIsModalOpen} />
             </CSSTransition>
             <CSSTransition
                 in={!loading && !error}

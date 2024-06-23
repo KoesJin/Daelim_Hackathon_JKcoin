@@ -27,20 +27,20 @@ const MyCoinPage = () => {
     // calculateTotals 함수를 useCallback으로 정의
     const calculateTotals = useCallback(() => {
         let totalPurchased = 0;
+        let totalPurchased2add = 0;
+        let totalPurchasedadd = 0;
         let total_cash = 0;
 
         coinData.forEach((coin) => {
             if (coin.totalPurchased2 - coin.totalSold2 !== 0) {
-                total_cash +=
-                    ((((coin.totalPurchased2 - coin.totalSold2) * convertUSDToKRW(currentPrices[coin.coinName]) || 0) -
-                        (coin.totalPurchased - coin.totalSold)) /
-                        (coin.totalPurchased - coin.totalSold)) *
-                    100;
+                totalPurchased2add +=
+                    (coin.totalPurchased2 - coin.totalSold2) * convertUSDToKRW(currentPrices[coin.coinName]) || 0;
+                totalPurchasedadd += coin.totalPurchased - coin.totalSold;
                 totalPurchased +=
                     (coin.totalPurchased2 - coin.totalSold2) * convertUSDToKRW(currentPrices[coin.coinName]) || 0;
             }
         });
-
+        total_cash = ((totalPurchased2add - totalPurchasedadd) / totalPurchasedadd) * 100;
         setTotalPurchased(totalPurchased);
         setTotalProfit(total_cash);
     }, [coinData, currentPrices, convertUSDToKRW]);
@@ -184,7 +184,7 @@ const MyCoinPage = () => {
                                                   ((totalValue - (coin.totalPurchased - coin.totalSold)) /
                                                       (coin.totalPurchased - coin.totalSold)) *
                                                       100,
-                                                  3
+                                                  4
                                               ) + '%';
 
                                     return (

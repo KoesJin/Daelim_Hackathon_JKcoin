@@ -5,8 +5,6 @@ import { Helmet } from 'react-helmet';
 import { createGlobalStyle } from 'styled-components';
 import styled from 'styled-components';
 import Footer from './component/GlobalFooter/Footer';
-import LoadingComponent from './component/LoadingPage/LoadingComponent'; // 새로 추가된 로딩 컴포넌트
-import SettingsModal from './component/SettingsIcon/SettingsModal'; // 모달 컴포넌트 추가
 
 // 전역 스타일 정의
 const GlobalStyles = createGlobalStyle`
@@ -106,11 +104,11 @@ function Root() {
     const location = useLocation();
     const navigate = useNavigate();
     const [isLandscape, setIsLandscape] = useState(false);
-    const [loading, setLoading] = useState(true); // 로딩 상태 추가
-    const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const isLoginPage =
         location.pathname.toLowerCase() === '/loginpage' || location.pathname.toLowerCase() === '/signup';
+    const isBuyCoinsPage = location.pathname.toLowerCase() === '/buycoins';
 
     useEffect(() => {
         const handleOrientationChange = () => {
@@ -152,40 +150,28 @@ function Root() {
             if (!token && !isLoginPage) {
                 navigate('/loginpage');
             }
-            setLoading(false);
         };
 
         checkLoginStatus();
     }, [location.pathname, navigate, isLoginPage]);
 
-    const handleModalOpen = () => {
-        setIsModalOpen(true);
-    };
-
-    const handleModalClose = () => {
-        setIsModalOpen(false);
-    };
-
     return (
         <>
             <Helmet>
                 <title>JKCoin</title>
-                <meta name="theme-color" content={isModalOpen ? '#444444' : '#000000'} />
             </Helmet>
             <GlobalStyles />
             <PageContainer className="page-container">
                 <TransitionGroup>
                     <CSSTransition classNames="fade" timeout={300} key={location.key}>
                         <AnimationContainer className="scrollable">
-                            {loading ? <LoadingComponent /> : <Outlet />}
+                            <Outlet context={{ isModalOpen, setIsModalOpen }} />
                         </AnimationContainer>
                     </CSSTransition>
                 </TransitionGroup>
-                {!isLoginPage && !loading && !isModalOpen && <Footer />}{' '}
-                {/* 모달이 열려 있을 때는 Footer를 렌더링하지 않음 */}
+                {!isLoginPage && !isBuyCoinsPage && !isModalOpen && <Footer />}
             </PageContainer>
-            <button onClick={handleModalOpen}>설정 열기</button>
-            {isModalOpen && <SettingsModal onClose={handleModalClose} />}
+
             <Overlay visible={isLandscape}>기기를 세로로 돌려주세요.</Overlay>
         </>
     );

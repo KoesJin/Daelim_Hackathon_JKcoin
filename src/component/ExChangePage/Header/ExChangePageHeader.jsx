@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+// ExChangePageHeader.jsx
+import React, { useState, useEffect } from 'react';
 import styles from '../../../css/ExChangePage/Header/ExChangePageHeader.module.css';
 import { ReactComponent as SettingsIcon } from '../../../svg/ExChangePage/Header/settings.svg';
 import { ReactComponent as NotificationsIcon } from '../../../svg/ExChangePage/Header/notifications.svg';
 import SettingsModal from '../../SettingsIcon/SettingsModal';
 
-function ExChangePageHeader() {
+function ExChangePageHeader({ onModalChange }) {
     const [showModal, setShowModal] = useState(false);
+
+    useEffect(() => {
+        onModalChange(showModal);
+    }, [showModal, onModalChange]);
 
     const openModal = () => {
         setShowModal(true);

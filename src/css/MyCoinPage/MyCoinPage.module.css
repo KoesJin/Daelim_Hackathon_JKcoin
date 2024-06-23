@@ -21,12 +21,6 @@
     font-weight: bold;
 }
 
-.searchBar {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-}
-
 .totalAssets {
     display: flex;
     justify-content: space-between;

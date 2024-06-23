@@ -4,7 +4,7 @@
     color: white;
     position: relative;
     overflow-y: auto;
-    height: calc(100vh - 10vh);
+    height: calc(100vh);
     box-sizing: border-box;
 }
 

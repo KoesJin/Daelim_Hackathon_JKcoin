@@ -5,7 +5,7 @@
     color: white;
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 15vh);
+    height: calc(100vh - 18vh);
     box-sizing: border-box;
     overflow: hidden;
 }

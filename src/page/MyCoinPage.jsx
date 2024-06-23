@@ -1,120 +1,145 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import styles from '../css/MyCoinPage/MyCoinPage.module.css';
+import { Link } from 'react-router-dom';
 
-export default function MyCoinPage() {
-    const [coins, setCoins] = useState([]);
-    const [totalMoney, setTotalMoney] = useState(0);
-    const [totalValue, setTotalValue] = useState(0);
-    const [profitLoss, setProfitLoss] = useState(0);
+const MyCoinPage = () => {
+    const [holdings, setHoldings] = useState(0);
+    const [totalPurchased, setTotalPurchased] = useState(0);
+    const [totalProfit, setTotalProfit] = useState(0);
+    const [coinData, setCoinData] = useState([]);
+    const [currentPrices, setCurrentPrices] = useState({});
+    const [exchangeRates, setExchangeRates] = useState({});
+    const [isDataReady, setIsDataReady] = useState(false);
+
+    // convertUSDToKRW 함수를 useCallback으로 정의
+    const convertUSDToKRW = useCallback(
+        (usdAmount) => {
+            const exchangeRate = exchangeRates['KRW'];
+            if (exchangeRate) {
+                return usdAmount * exchangeRate;
+            }
+            return 0;
+        },
+        [exchangeRates]
+    );
+
+    // calculateTotals 함수를 useCallback으로 정의
+    const calculateTotals = useCallback(() => {
+        let totalPurchased = 0;
+        let total_cash = 0;
+
+        coinData.forEach((coin) => {
+            if (coin.totalPurchased2 - coin.totalSold2 !== 0) {
+                total_cash +=
+                    ((((coin.totalPurchased2 - coin.totalSold2) * convertUSDToKRW(currentPrices[coin.coinName]) || 0) -
+                        (coin.totalPurchased - coin.totalSold)) /
+                        (coin.totalPurchased - coin.totalSold)) *
+                    100;
+                totalPurchased +=
+                    (coin.totalPurchased2 - coin.totalSold2) * convertUSDToKRW(currentPrices[coin.coinName]) || 0;
+            }
+        });
+
+        setTotalPurchased(totalPurchased);
+        setTotalProfit(total_cash);
+    }, [coinData, currentPrices, convertUSDToKRW]);
 
     useEffect(() => {
-        const fetchFunds = async () => {
-            const userKey = localStorage.getItem('user_key');
-            if (!userKey) {
-                console.error('user_key is missing in localStorage');
-                return;
-            }
-
+        const fetchData = async () => {
             try {
+                const userKey = localStorage.getItem('user_key');
+                if (!userKey) {
+                    console.error('user_key is missing in localStorage');
+                    return;
+                }
+
                 let baseURL = '';
                 if (process.env.NODE_ENV === 'development') {
                     baseURL = 'http://121.139.20.242:5011';
                 }
 
-                const response = await axios.post(`${baseURL}/api/key_money`, {
-                    user_key: userKey,
-                });
-                if (response.data.valid) {
-                    setTotalMoney(response.data.krw);
-                } else {
-                    console.error('Invalid user_key');
-                }
-            } catch (error) {
-                console.error('펀드 데이터를 가져오는 중 오류가 발생했습니다:', error);
-            }
-        };
-
-        const fetchCoins = async () => {
-            const userKey = localStorage.getItem('user_key');
-            if (!userKey) {
-                console.error('user_key is missing in localStorage');
-                return;
-            }
-
-            try {
-                let baseURL = '';
-                if (process.env.NODE_ENV === 'development') {
-                    baseURL = 'http://121.139.20.242:5011';
-                }
-
-                const response = await axios.post(`${baseURL}/api/user_coins`, {
+                // Fetch user's total holdings
+                const holdingsResponse = await axios.post(`${baseURL}/api/key_money`, {
                     user_key: userKey,
                 });
 
-                if (response.data.valid) {
-                    const myCoins = response.data.coins;
-
-                    const coinIds = myCoins.map((coin) => coin.coinName).join(',');
-                    const coinResponse = await axios.get('https://api.coingecko.com/api/v3/coins/markets', {
-                        params: {
-                            vs_currency: 'krw',
-                            ids: coinIds,
-                        },
-                    });
-
-                    const coinData = coinResponse.data;
-
-                    const updatedCoins = myCoins.map((myCoin) => {
-                        const coinInfo = coinData.find((coin) => coin.id === myCoin.coinName);
-                        const totalCoinsOwned = myCoin.totalPurchased - myCoin.totalSold;
-                        const value = totalCoinsOwned * coinInfo.current_price;
-                        const averagePurchasePrice = myCoin.totalPurchasePrice / myCoin.totalPurchased;
-                        const profitLossPercent =
-                            ((coinInfo.current_price - averagePurchasePrice) / averagePurchasePrice) * 100;
-                        const profitLossAmount = value - totalCoinsOwned * averagePurchasePrice;
-                        return {
-                            ...myCoin,
-                            numberOfCoins: totalCoinsOwned,
-                            current_price: coinInfo.current_price,
-                            value: value,
-                            profit_loss_percent: profitLossPercent,
-                            profit_loss_amount: profitLossAmount,
-                        };
-                    });
-
-                    const totalValue = updatedCoins.reduce((acc, coin) => acc + coin.value, 0);
-                    const totalProfitLoss = updatedCoins.reduce((acc, coin) => acc + coin.profit_loss_amount, 0);
-                    const totalInvestment = updatedCoins.reduce(
-                        (acc, coin) => acc + coin.totalPurchased * (coin.totalPurchasePrice / coin.totalPurchased),
-                        0
-                    );
-                    const totalProfitLossPercent = (totalProfitLoss / totalInvestment) * 100;
-
-                    setCoins(updatedCoins);
-                    setTotalValue(totalValue);
-                    setProfitLoss(totalProfitLossPercent);
+                if (holdingsResponse.data.valid) {
+                    setHoldings(holdingsResponse.data.krw);
                 } else {
-                    console.error('Invalid user_key');
+                    console.error('Invalid user_key for holdings');
+                    return;
+                }
+
+                // Fetch user's total coin values and set coin data for rendering
+                const totalValueResponse = await axios.post(`${baseURL}/api/total_coin_value`, {
+                    user_key: userKey,
+                });
+
+                if (totalValueResponse.data.valid) {
+                    setCoinData(totalValueResponse.data.totalCoinData);
+
+                    // Fetch current prices for each coin
+                    await fetchCurrentPrices(totalValueResponse.data.totalCoinData);
+
+                    // Set isDataReady to true after fetching current prices and exchange rates
+                    setIsDataReady(true);
+                } else {
+                    console.error('Invalid user_key for total coin value');
                 }
             } catch (error) {
-                console.error('코인 데이터를 가져오는 중 오류가 발생했습니다:', error);
+                console.error('Error fetching data:', error);
             }
         };
 
-        fetchFunds();
-        fetchCoins();
+        fetchData();
+        const intervalId = setInterval(() => {
+            fetchData();
+        }, 3000);
+
+        return () => clearInterval(intervalId);
     }, []);
 
+    const fetchCurrentPrices = async (coins) => {
+        try {
+            const coinSymbols = coins.map((coin) => coin.coinName).join(',');
+            const response = await axios.get(`https://api.coincap.io/v2/assets?ids=${coinSymbols}`);
+
+            const prices = {};
+            response.data.data.forEach((coin) => {
+                prices[coin.id] = parseFloat(coin.priceUsd); // Assuming price is in USD, adjust as per API response
+            });
+
+            setCurrentPrices(prices);
+
+            // Fetch exchange rates
+            const exchangeRateResponse = await axios.get('https://api.exchangerate-api.com/v4/latest/USD');
+
+            if (exchangeRateResponse.data && exchangeRateResponse.data.rates) {
+                setExchangeRates(exchangeRateResponse.data.rates);
+            } else {
+                console.error('Failed to fetch exchange rates');
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    useEffect(() => {
+        if (isDataReady) {
+            calculateTotals();
+        }
+    }, [isDataReady, currentPrices, exchangeRates, calculateTotals]); // Recalculate totals when data is ready or currentPrices/exchangeRates change
+
     const formatNumber = (number, decimals = 0) => {
+        if (number === undefined || number === null) {
+            return ''; // Or handle as per your application's logic
+        }
+
         return number.toLocaleString('ko-KR', {
             minimumFractionDigits: decimals,
             maximumFractionDigits: decimals,
         });
-    };
-
-    const getProfitLossClass = (value) => {
-        return value >= 0 ? styles.profit : styles.loss;
     };
 
     return (
@@ -122,17 +147,15 @@ export default function MyCoinPage() {
             <div className={styles.header}>
                 <div className={styles.title}>코인정보</div>
             </div>
-            <div className={styles.searchBar}>
-                <input type="text" placeholder="코인명/심볼 검색" className={styles.searchInput} />
-            </div>
+            <div className={styles.searchBar}></div>
             <div className={styles.totalAssets}>
                 <span>총 보유자산</span>
-                <span>{formatNumber(totalMoney + totalValue, 0)} KRW</span>
+                <span>{formatNumber(holdings + totalPurchased, 0)} KRW</span>
             </div>
             <div className={styles.assetDetails}>
-                <h2>보유 자산(KRW): {formatNumber(totalMoney, 0)} KRW</h2>
-                <h2>코인의 총 가치(KRW): {formatNumber(totalValue, 0)} KRW</h2>
-                <h2 className={getProfitLossClass(profitLoss)}>총 손익: {profitLoss.toFixed(2)}%</h2>
+                <h2>보유 자산(KRW): {formatNumber(holdings, 0)} KRW</h2>
+                <h2>코인의 총 가치(KRW): {formatNumber(totalPurchased, 0)} KRW</h2>
+                <h2 className={styles.profit}>총 손익: {formatNumber(totalProfit, 4)}%</h2>
             </div>
             <div className={styles.coinsList}>
                 <h2>보유 코인</h2>
@@ -148,21 +171,44 @@ export default function MyCoinPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {coins.map((coin) => (
-                                <tr key={coin.coinName}>
-                                    <td>{coin.coinName}</td>
-                                    <td>{formatNumber(coin.numberOfCoins, 3)}</td>
-                                    <td>{formatNumber(coin.current_price, 2)} KRW</td>
-                                    <td>{formatNumber(coin.value, 2)} KRW</td>
-                                    <td className={getProfitLossClass(coin.profit_loss_percent)}>
-                                        {coin.profit_loss_percent.toFixed(2)}%
-                                    </td>
-                                </tr>
-                            ))}
+                            {coinData.map((coin) => {
+                                const currentPrice = currentPrices[coin.coinName];
+                                if (coin.totalPurchased2 - coin.totalSold2 !== 0) {
+                                    const totalAmount = coin.totalPurchased2 - coin.totalSold2;
+                                    const convertedPrice = convertUSDToKRW(currentPrice);
+                                    const totalValue = totalAmount * convertedPrice;
+                                    const percentageChange =
+                                        totalAmount === 0
+                                            ? '0%'
+                                            : formatNumber(
+                                                  ((totalValue - (coin.totalPurchased - coin.totalSold)) /
+                                                      (coin.totalPurchased - coin.totalSold)) *
+                                                      100,
+                                                  3
+                                              ) + '%';
+
+                                    return (
+                                        <tr key={coin.coinName}>
+                                            <td>
+                                                <Link to={`/buycoins?coinName=${encodeURIComponent(coin.coinName)}`}>
+                                                    {coin.coinName}
+                                                </Link>
+                                            </td>
+                                            <td>{formatNumber(totalAmount, 4)}</td>
+                                            <td>{formatNumber(convertedPrice, 4)}</td>
+                                            <td>{formatNumber(totalValue, 4)}</td>
+                                            <td>{percentageChange}</td>
+                                        </tr>
+                                    );
+                                }
+                                return null; // 반환값이 없을 경우 null 반환
+                            })}
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     );
-}
+};
+
+export default MyCoinPage;

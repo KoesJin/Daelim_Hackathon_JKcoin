@@ -6,6 +6,7 @@ import { createGlobalStyle } from 'styled-components';
 import styled from 'styled-components';
 import Footer from './component/GlobalFooter/Footer';
 import LoadingComponent from './component/LoadingPage/LoadingComponent'; // 새로 추가된 로딩 컴포넌트
+import SettingsModal from './component/SettingsIcon/SettingsModal'; // 모달 컴포넌트 추가
 
 // 전역 스타일 정의
 const GlobalStyles = createGlobalStyle`
@@ -106,6 +107,7 @@ function Root() {
     const navigate = useNavigate();
     const [isLandscape, setIsLandscape] = useState(false);
     const [loading, setLoading] = useState(true); // 로딩 상태 추가
+    const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
 
     const isLoginPage =
         location.pathname.toLowerCase() === '/loginpage' || location.pathname.toLowerCase() === '/signup';
@@ -156,10 +158,19 @@ function Root() {
         checkLoginStatus();
     }, [location.pathname, navigate, isLoginPage]);
 
+    const handleModalOpen = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+    };
+
     return (
         <>
             <Helmet>
                 <title>JKCoin</title>
+                <meta name="theme-color" content={isModalOpen ? '#444444' : '#000000'} />
             </Helmet>
             <GlobalStyles />
             <PageContainer className="page-container">
@@ -170,8 +181,11 @@ function Root() {
                         </AnimationContainer>
                     </CSSTransition>
                 </TransitionGroup>
-                {!isLoginPage && !loading && <Footer />} {/* 로그인 페이지가 아닌 경우에만 Footer 렌더링 */}
+                {!isLoginPage && !loading && !isModalOpen && <Footer />}{' '}
+                {/* 모달이 열려 있을 때는 Footer를 렌더링하지 않음 */}
             </PageContainer>
+            <button onClick={handleModalOpen}>설정 열기</button>
+            {isModalOpen && <SettingsModal onClose={handleModalClose} />}
             <Overlay visible={isLandscape}>기기를 세로로 돌려주세요.</Overlay>
         </>
     );

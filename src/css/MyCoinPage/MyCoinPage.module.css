@@ -27,15 +27,6 @@
     margin: 20px 0;
 }
 
-.searchInput {
-    width: 80%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #30363d;
-    background-color: #161b22;
-    color: white;
-}
-
 .totalAssets {
     display: flex;
     justify-content: space-between;

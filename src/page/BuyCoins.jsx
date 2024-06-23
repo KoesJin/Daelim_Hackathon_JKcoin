@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import { useLocation, Link } from 'react-router-dom'; // Link를 사용합니다
 import axios from 'axios';
@@ -17,6 +17,9 @@ export default function BuyCoins() {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const coinName = searchParams.get('coinName')?.toLowerCase();
+
+    const chartRef = useRef(null); // Ref for the chart instance
+    const chartContainerRef = useRef(null); // Ref for the chart container
 
     useEffect(() => {
         const fetchChartData = async () => {
@@ -116,6 +119,7 @@ export default function BuyCoins() {
 
         fetchWalletBalance();
     }, []);
+
     useEffect(() => {
         // Fetch number of coins owned
         const fetchOwnedCoins = async () => {
@@ -153,8 +157,11 @@ export default function BuyCoins() {
 
     useEffect(() => {
         if (chartData) {
-            const ctx = document.getElementById('coinChart').getContext('2d');
-            new Chart(ctx, {
+            if (chartRef.current) {
+                chartRef.current.destroy(); // Destroy previous chart instance if it exists
+            }
+            const ctx = chartContainerRef.current.getContext('2d');
+            chartRef.current = new Chart(ctx, {
                 type: 'line',
                 data: chartData,
                 options: {
@@ -353,7 +360,7 @@ export default function BuyCoins() {
             </Link>
             <h2>가격 차트</h2>
             <div className={styles.chartContainer}>
-                <canvas id="coinChart" className={styles.canvas}></canvas>
+                <canvas ref={chartContainerRef} id="coinChart" className={styles.canvas}></canvas>
             </div>
             <div className={styles.buttonContainer}>
                 <button className={styles.actionButton} onClick={toggleBuyForm}>

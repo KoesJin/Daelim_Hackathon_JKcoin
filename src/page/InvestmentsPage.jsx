@@ -26,6 +26,8 @@ export default function Investments() {
             const formattedHistory = response.data.map((item) => ({
                 ...item,
                 date: formatDate(item.date),
+                numberOfCoins: parseFloat(item.numberOfCoins).toFixed(8),
+                totalPrice: parseFloat(item.totalPrice).toFixed(2),
             }));
 
             setHistory(formattedHistory);
@@ -52,27 +54,19 @@ export default function Investments() {
 
     return (
         <>
-            <div className={styles.header}>
-                <div className={styles.headerLeft}></div>
-                <div className={styles.headerCenter}>
-                    <h1 className={styles.headerTitle}>Investment Dashboard</h1>
-                </div>
-                <div className={styles.headerRight}></div>
-            </div>
             <div className={styles.container}>
                 <h2 className={styles.title}>투자 내역</h2>
 
                 {error && <p className={styles.errorMessage}>{error}</p>}
 
-                <h3 className={styles.midTitle}>투자 내역:</h3>
                 <div className={styles.investmentHistory}>
                     {history.map((item, index) => (
                         <div key={index} className={styles.historyItem}>
                             <p>거래 종류 : {item.type}</p>
                             <p>코인 이름 : {item.coinName}</p>
-                            <p>매도/매수 가격 : {item.numberOfCoins}</p>
-                            <p>매수/매도 수량 : {(item.totalPrice * item.numberOfCoins).toFixed(8)}</p>
-                            <p>매수/매도 합산 가격 : {item.totalPrice}</p>
+                            <p>매도/매수 가격 : {item.totalPrice}</p>
+                            <p>매수/매도 수량 : {item.numberOfCoins}</p>
+                            <p>매수/매도 합산 가격 : {(item.totalPrice * item.numberOfCoins).toFixed(8)}</p>
                             <p>매수/매도 날짜 : {item.date}</p>
                         </div>
                     ))}

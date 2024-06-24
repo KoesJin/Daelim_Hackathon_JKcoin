@@ -404,7 +404,7 @@ export default function BuyCoins() {
                             ))}
                         </div>
                         <p>
-                            총 금액: {typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(2) : '0.00'}{' '}
+                            총 금액: {typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(11) : '0.00'}{' '}
                             KRW
                         </p>
                         <button type="submit" className={styles.submitButton}>
@@ -441,7 +441,7 @@ export default function BuyCoins() {
                             ))}
                         </div>
                         <p>
-                            총 금액: {typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(2) : '0.00'}{' '}
+                            총 금액: {typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(11) : '0.00'}{' '}
                             KRW
                         </p>
                         <button type="submit" className={styles.submitButton}>

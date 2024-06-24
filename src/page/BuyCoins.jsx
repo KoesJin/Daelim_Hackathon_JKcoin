@@ -405,11 +405,11 @@ export default function BuyCoins() {
             {showBuyForm && (
                 <div className={styles.formContainer}>
                     <h2 className={styles.BuyCoin_h2}>매수 : {coinName}</h2>
-                    <p>코인 가격: {formatNumber(currentPrice)} KRW</p>
-                    <p>보유 금액: {formatNumber(walletBalance)} KRW</p>
+                    <p className={styles.p}>코인 가격: {formatNumber(currentPrice)} KRW</p>
+                    <p className={styles.p}>보유 금액: {formatNumber(walletBalance)} KRW</p>
                     <form onSubmit={handleBuy}>
                         <label>
-                            갯수를 입력하세요.:
+                            갯수를 입력하세요 :
                             <input
                                 type="text"
                                 value={numberOfCoins}
@@ -440,11 +440,11 @@ export default function BuyCoins() {
             {showSellForm && (
                 <div className={styles.formContainer}>
                     <h2 className={styles.BuyCoin_h2}>매도 : {coinName}</h2>
-                    <p>코인 가격: {formatNumber(currentPrice)} KRW</p>
-                    <p>보유 코인: {ownedCoins ? formatNumber(ownedCoins) : '0'}</p>
+                    <p className={styles.p}>코인 가격: {formatNumber(currentPrice)} KRW</p>
+                    <p className={styles.p}>보유 코인: {ownedCoins ? formatNumber(ownedCoins) : '0'}</p>
                     <form onSubmit={handleSell}>
                         <label>
-                            갯수를 입력하세요.:
+                            갯수를 입력하세요 :
                             <input
                                 type="text"
                                 value={numberOfCoins}
@@ -465,7 +465,7 @@ export default function BuyCoins() {
                                 </button>
                             ))}
                         </div>
-                        <p>총 금액: {formatNumber(totalPurchasePrice)} KRW</p>
+                        <p className={styles.p}>총 금액: {formatNumber(totalPurchasePrice)} KRW</p>
                         <button type="submit" className={styles.submitButton}>
                             매도
                         </button>

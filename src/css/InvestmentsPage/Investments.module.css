@@ -1,0 +1,71 @@
+.container {
+    background-color: #282832;
+    color: white;
+    padding: 20px;
+    padding-top: 0px;
+    height: calc(100vh - 10vh);
+    font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.Midtitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.investmentHistory {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 20px;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.historyItem {
+    border-bottom: 1px solid #30363d;
+    padding: 10px 0;
+}
+
+.historyItem:last-child {
+    border-bottom: none;
+}
+
+.historyItem p {
+    margin: 5px 0;
+}
+
+.errorMessage {
+    color: #cd0c22;
+    text-align: center;
+    margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+    .title,
+    .Midtitle {
+        font-size: 1.3rem;
+    }
+
+    .historyItem p {
+        font-size: 0.9rem;
+    }
+}

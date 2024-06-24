@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import styles from '../css/InvestmentsPage/Investments.module.css'; // CSS 파일을 import 합니다.
 
 export default function Investments() {
     const [history, setHistory] = useState([]);
     const [error, setError] = useState(null);
 
-    const fetchInvestmentsHistory = async () => {
+    const fetchInvestmentsHistory = useCallback(async () => {
         try {
             const userKey = localStorage.getItem('user_key');
             if (!userKey) {
@@ -22,10 +23,9 @@ export default function Investments() {
                 user_key: userKey,
             });
 
-            // Process date formatting here
             const formattedHistory = response.data.map((item) => ({
                 ...item,
-                date: formatDate(item.date), // Assuming item.date is already in a format Date can parse
+                date: formatDate(item.date),
             }));
 
             setHistory(formattedHistory);
@@ -33,14 +33,11 @@ export default function Investments() {
             console.error('Error fetching history:', err);
             setError('Failed to fetch history');
         }
-    };
+    }, []);
 
     useEffect(() => {
-        fetchInvestmentsHistory(); // fetchInvestmentsHistory is now a dependency
-
-        // Since fetchInvestmentsHistory does not change, it does not need to be included in the dependency array.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // Empty dependency array because we want this effect to run only once on mount
+        fetchInvestmentsHistory();
+    }, [fetchInvestmentsHistory]);
 
     const formatDate = (dateStr) => {
         const date = new Date(dateStr);
@@ -54,24 +51,33 @@ export default function Investments() {
     };
 
     return (
-        <div>
-            <h2>Investments History</h2>
+        <>
+            <div className={styles.header}>
+                <div className={styles.headerLeft}></div>
+                <div className={styles.headerCenter}>
+                    <h1 className={styles.headerTitle}>Investment Dashboard</h1>
+                </div>
+                <div className={styles.headerRight}></div>
+            </div>
+            <div className={styles.container}>
+                <h2 className={styles.title}>투자 내역</h2>
 
-            {error && <p>{error}</p>}
+                {error && <p className={styles.errorMessage}>{error}</p>}
 
-            <h3>Investments History:</h3>
-            <ul>
-                {history.map((item, index) => (
-                    <li key={index}>
-                        <p>거래 종류 : {item.type}</p>
-                        <p>코인 이름 : {item.coinName}</p>
-                        <p>매도/매수 가격 : {item.numberOfCoins}</p>
-                        <p>매수/매도 수량 : {(item.totalPrice * item.numberOfCoins).toFixed(8)}</p>
-                        <p>매수/매도 합산 가격 : {item.totalPrice}</p>
-                        <p>매수/매도 날짜 : {item.date}</p>
-                    </li>
-                ))}
-            </ul>
-        </div>
+                <h3 className={styles.midTitle}>투자 내역:</h3>
+                <div className={styles.investmentHistory}>
+                    {history.map((item, index) => (
+                        <div key={index} className={styles.historyItem}>
+                            <p>거래 종류 : {item.type}</p>
+                            <p>코인 이름 : {item.coinName}</p>
+                            <p>매도/매수 가격 : {item.numberOfCoins}</p>
+                            <p>매수/매도 수량 : {(item.totalPrice * item.numberOfCoins).toFixed(8)}</p>
+                            <p>매수/매도 합산 가격 : {item.totalPrice}</p>
+                            <p>매수/매도 날짜 : {item.date}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </>
     );
 }

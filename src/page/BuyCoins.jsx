@@ -78,7 +78,7 @@ export default function BuyCoins() {
                 const krwExchangeRate = exchangeRate['KRW'];
                 const priceInKRW = priceUsd * krwExchangeRate;
 
-                setCurrentPrice(priceInKRW.toFixed(8));
+                setCurrentPrice(priceInKRW.toFixed(11));
             } catch (error) {
                 console.error('현재 가격 가져오기 오류:', error);
             }
@@ -136,7 +136,7 @@ export default function BuyCoins() {
                 });
 
                 if (response.data.valid) {
-                    setOwnedCoins(response.data.numberOfCoins.toFixed(8));
+                    setOwnedCoins(response.data.numberOfCoins.toFixed(11));
                 } else {
                     setOwnedCoins(null);
                     console.log('해당 종류의 코인을 보유하지 않음');
@@ -213,8 +213,8 @@ export default function BuyCoins() {
                 setTotalPurchasePrice(0);
                 alert('잔액이 부족합니다.');
             } else {
-                setNumberOfCoins(coins.toFixed(8));
-                setTotalPurchasePrice(parseFloat(totalAmount.toFixed(2)));
+                setNumberOfCoins(coins.toFixed(11));
+                setTotalPurchasePrice(parseFloat(totalAmount.toFixed(11)));
             }
         } else if (actionType === 'sell') {
             updateActiveClass(sellPercentageButtonsRef, index);
@@ -227,7 +227,7 @@ export default function BuyCoins() {
             const coinsToSell = (parseFloat(ownedCoins) * percentage) / 100;
             setNumberOfCoins(coinsToSell.toFixed(8));
             const totalPrice = parseFloat(currentPrice) * coinsToSell;
-            setTotalPurchasePrice(parseFloat(totalPrice.toFixed(2)));
+            setTotalPurchasePrice(parseFloat(totalPrice.toFixed(11)));
         }
     };
 
@@ -240,7 +240,7 @@ export default function BuyCoins() {
             setTotalPurchasePrice(0);
             alert('잔액이 부족합니다.');
         } else {
-            setNumberOfCoins(coins);
+            setNumberOfCoins((coins - 0.00000000001).toFixed(11)); // Convert to string with fixed decimals
             setTotalPurchasePrice(totalPrice);
         }
     };
@@ -350,6 +350,10 @@ export default function BuyCoins() {
         setIsStarred(!isStarred);
     };
 
+    const formatNumber = (number) => {
+        return Number(number).toLocaleString(undefined, { minimumFractionDigits: 11, maximumFractionDigits: 11 });
+    };
+
     return (
         <div className={styles.container}>
             <Link to="/" className={styles.backButton}>
@@ -379,8 +383,8 @@ export default function BuyCoins() {
             {showBuyForm && (
                 <div className={styles.formContainer}>
                     <h2 className={styles.BuyCoin_h2}>매수 : {coinName}</h2>
-                    <p>코인 가격: {currentPrice} KRW</p>
-                    <p>보유 금액: {walletBalance} KRW</p>
+                    <p>코인 가격: {formatNumber(currentPrice)} KRW</p>
+                    <p>보유 금액: {formatNumber(walletBalance)} KRW</p>
                     <form onSubmit={handleBuy}>
                         <label>
                             갯수를 입력하세요.:
@@ -403,10 +407,7 @@ export default function BuyCoins() {
                                 </button>
                             ))}
                         </div>
-                        <p>
-                            총 금액: {typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(11) : '0.00'}{' '}
-                            KRW
-                        </p>
+                        <p>총 금액: {formatNumber(totalPurchasePrice)} KRW</p>
                         <button type="submit" className={styles.submitButton}>
                             매수
                         </button>
@@ -416,8 +417,8 @@ export default function BuyCoins() {
             {showSellForm && (
                 <div className={styles.formContainer}>
                     <h2 className={styles.BuyCoin_h2}>매도 : {coinName}</h2>
-                    <p>코인 가격: {currentPrice} KRW</p>
-                    <p>보유 코인: {ownedCoins ? ownedCoins : '0'}</p>
+                    <p>코인 가격: {formatNumber(currentPrice)} KRW</p>
+                    <p>보유 코인: {ownedCoins ? formatNumber(ownedCoins) : '0'}</p>
                     <form onSubmit={handleSell}>
                         <label>
                             갯수를 입력하세요.:
@@ -440,10 +441,7 @@ export default function BuyCoins() {
                                 </button>
                             ))}
                         </div>
-                        <p>
-                            총 금액: {typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(11) : '0.00'}{' '}
-                            KRW
-                        </p>
+                        <p>총 금액: {formatNumber(totalPurchasePrice)} KRW</p>
                         <button type="submit" className={styles.submitButton}>
                             매도
                         </button>

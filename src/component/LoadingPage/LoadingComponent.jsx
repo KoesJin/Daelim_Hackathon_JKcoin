@@ -19,7 +19,11 @@ const LoadingComponent = () => {
     return (
         <div className={styles.loading}>
             <div className={styles.spinner}></div>
-            {showRefreshButton && <button onClick={handleRefresh}>새로고침</button>}
+            {showRefreshButton && (
+                <button className={styles.refreshButton} onClick={handleRefresh}>
+                    새로고침
+                </button>
+            )}
         </div>
     );
 };

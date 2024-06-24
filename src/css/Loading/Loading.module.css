@@ -3,7 +3,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: calc(100vh - 10vh); /* 60px는 푸터의 높이로 가정 */
+    position: relative;
 }
 
 .spinner {
@@ -31,10 +32,9 @@
     height: 100vh;
     color: red;
     font-size: 24px;
-    background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
-/* 추가된 트랜지션 효과 */
 .fadeEnter {
     opacity: 0;
     transform: translateY(-20px);
@@ -54,19 +54,18 @@
     transition: opacity 300ms ease-out, transform 300ms ease-out;
 }
 
-/* 새로고침 버튼 스타일 */
 .refreshButton {
-    margin-top: 40px; /* 스피너와의 간격 */
-    padding: 10px 20px;
-    font-size: 18px;
-    background-color: #3498db;
+    margin-top: 50px;
+    padding: 15px 30px;
+    font-size: 22px;
+    background-color: rgb(40, 40, 50);
     color: white;
-    border: none;
+    border: 2px solid #ccc;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .refreshButton:hover {
-    background-color: #2980b9;
+    background-color: rgb(30, 30, 40);
 }

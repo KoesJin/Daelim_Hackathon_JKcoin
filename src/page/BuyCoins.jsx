@@ -134,7 +134,7 @@ export default function BuyCoins() {
                 });
 
                 if (response.data.valid) {
-                    setOwnedCoins(response.data.numberOfCoins.toFixed(11));
+                    setOwnedCoins(response.data.numberOfCoins.toFixed(8));
                 } else {
                     setOwnedCoins(null);
                     console.log('해당 종류의 코인을 보유하지 않음');
@@ -200,8 +200,8 @@ export default function BuyCoins() {
                 setTotalPurchasePrice(0);
                 alert('잔액이 부족합니다.');
             } else {
-                setNumberOfCoins(coins.toFixed(11));
-                setTotalPurchasePrice(parseFloat(totalAmount.toFixed(11)));
+                setNumberOfCoins(coins.toFixed(8));
+                setTotalPurchasePrice(parseFloat(totalAmount.toFixed(2)));
             }
         } else if (actionType === 'sell') {
             if (ownedCoins === null || parseFloat(ownedCoins) === 0) {
@@ -211,9 +211,9 @@ export default function BuyCoins() {
                 return;
             }
             const coinsToSell = (parseFloat(ownedCoins) * percentage) / 100;
-            setNumberOfCoins(coinsToSell.toFixed(11));
+            setNumberOfCoins(coinsToSell.toFixed(8));
             const totalPrice = parseFloat(currentPrice) * coinsToSell;
-            setTotalPurchasePrice(parseFloat(totalPrice.toFixed(11)));
+            setTotalPurchasePrice(parseFloat(totalPrice.toFixed(2)));
         }
     };
 
@@ -233,7 +233,7 @@ export default function BuyCoins() {
 
     const handleBuy = async (e) => {
         e.preventDefault();
-        const totalPrice = (parseFloat(currentPrice) * parseFloat(numberOfCoins)).toFixed(11);
+        const totalPrice = parseFloat(currentPrice) * parseFloat(numberOfCoins);
 
         if (totalPrice > walletBalance) {
             alert('잔액이 부족합니다.');
@@ -254,13 +254,13 @@ export default function BuyCoins() {
             const response = await axios.post(`${baseURL}/api/buy_coins`, {
                 user_key,
                 coinName,
-                numberOfCoins: parseFloat(numberOfCoins).toFixed(11),
+                numberOfCoins: parseFloat(numberOfCoins),
                 totalPrice,
             });
 
             if (response.data.success) {
                 alert('매수가 성공했습니다!');
-                setWalletBalance((walletBalance - totalPrice).toFixed(11));
+                setWalletBalance(walletBalance - totalPrice);
                 setNumberOfCoins('');
                 setTotalPurchasePrice(0);
                 window.location.reload();
@@ -293,7 +293,7 @@ export default function BuyCoins() {
                 return;
             }
 
-            const totalPrice = (parseFloat(currentPrice) * parseFloat(numberOfCoins)).toFixed(11);
+            const totalPrice = parseFloat(currentPrice) * parseFloat(numberOfCoins);
 
             if (parseFloat(numberOfCoins) > parseFloat(ownedCoins)) {
                 alert('보유한 코인이 부족합니다.');
@@ -303,13 +303,13 @@ export default function BuyCoins() {
             const response = await axios.post(`${baseURL}/api/sell_coins`, {
                 user_key,
                 coinName,
-                numberOfCoins: parseFloat(numberOfCoins).toFixed(11),
+                numberOfCoins: parseFloat(numberOfCoins),
                 totalPrice,
             });
 
             if (response.data.success) {
                 alert('매도가 성공했습니다!');
-                setWalletBalance((walletBalance + totalPrice).toFixed(11));
+                setWalletBalance(walletBalance + totalPrice);
                 setNumberOfCoins('');
                 setTotalPurchasePrice(0);
                 window.location.reload();
@@ -395,7 +395,7 @@ export default function BuyCoins() {
                             </button>
                         </div>
                         <p>
-                            총 금액: {typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(11) : '0.00'}{' '}
+                            총 금액: {typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(2) : '0.00'}{' '}
                             KRW
                         </p>
                         <button type="submit" className={styles.submitButton}>
@@ -437,7 +437,7 @@ export default function BuyCoins() {
                             </button>
                         </div>
                         <p>
-                            총 금액: {typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(11) : '0.00'}{' '}
+                            총 금액: {typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(2) : '0.00'}{' '}
                             KRW
                         </p>
                         <button type="submit" className={styles.submitButton}>

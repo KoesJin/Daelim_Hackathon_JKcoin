@@ -53,3 +53,20 @@
     transform: translateY(-20px);
     transition: opacity 300ms ease-out, transform 300ms ease-out;
 }
+
+/* 새로고침 버튼 스타일 */
+.refreshButton {
+    margin-top: 40px; /* 스피너와의 간격 */
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.refreshButton:hover {
+    background-color: #2980b9;
+}

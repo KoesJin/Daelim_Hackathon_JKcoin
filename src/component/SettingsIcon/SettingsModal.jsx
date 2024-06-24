@@ -9,7 +9,7 @@ const SettingsModal = ({ onClose }) => {
     };
 
     return (
-        <div className={styles.modalOverlay} onClick={onClose}>
+        <div className={styles.modalOverlay}>
             <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
                 <h2 className={styles.modalTitle}>설정</h2>
                 <ul className={styles.list}>

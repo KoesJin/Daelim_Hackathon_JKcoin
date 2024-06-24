@@ -1,0 +1,87 @@
+.container {
+    padding: 20px;
+    width: 90vw;
+    margin: 0 auto;
+    position: relative;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.userList {
+    max-height: 85vh; /* 스크롤을 위한 최대 높이 설정 */
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: rgb(40, 40, 50);
+}
+
+.userItem {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+
+.userItem:last-child {
+    border-bottom: none;
+}
+
+.userItem p {
+    margin: 5px 0;
+}
+
+.inputField {
+    width: calc(100% - 100px);
+    padding: 5px;
+    margin-right: 10px;
+    border: none; /* 모든 기본 테두리를 제거합니다 */
+    border-bottom: 1px solid #ccc; /* border-bottom만 추가합니다 */
+    border-radius: 0; /* border-radius를 제거합니다 */
+    background-color: transparent; /* 배경색을 투명하게 설정합니다 */
+    outline: none; /* 포커스 시 나타나는 기본 테두리를 제거합니다 */
+    color: white;
+}
+
+.assignButton {
+    padding: 5px 10px;
+    color: white;
+    background-color: rgb(40, 40, 50);
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.assignButton:hover {
+    background-color: #0056b3;
+}
+
+.errorMessage {
+    color: red;
+}
+
+.loadingMessage {
+    font-size: 18px;
+    color: #333;
+}
+
+.backButton {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.backIcon {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: white;
+}

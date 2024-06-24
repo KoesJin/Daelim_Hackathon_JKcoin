@@ -240,7 +240,7 @@ export default function BuyCoins() {
             setTotalPurchasePrice(0);
             alert('잔액이 부족합니다.');
         } else {
-            setNumberOfCoins((coins - 0.00000000001).toFixed(11)); // Convert to string with fixed decimals
+            setNumberOfCoins(coins.toFixed(11) - 0.00000000001); // Convert to string with fixed decimals
             setTotalPurchasePrice(totalPrice);
         }
     };

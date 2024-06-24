@@ -22,6 +22,8 @@ export default function BuyCoins() {
 
     const chartRef = useRef(null);
     const chartContainerRef = useRef(null);
+    const buyPercentageButtonsRef = useRef([]);
+    const sellPercentageButtonsRef = useRef([]);
 
     useEffect(() => {
         const fetchChartData = async () => {
@@ -190,11 +192,22 @@ export default function BuyCoins() {
         }
     }, [chartData]);
 
-    const handlePercentageClick = (percentage, actionType) => {
+    const handlePercentageClick = (percentage, actionType, index) => {
         const totalAmount = (walletBalance * percentage) / 100;
         const coins = totalAmount / parseFloat(currentPrice);
 
+        const updateActiveClass = (buttonsRef, activeIndex) => {
+            buttonsRef.current.forEach((button, i) => {
+                if (i === activeIndex) {
+                    button.classList.add(styles.active);
+                } else {
+                    button.classList.remove(styles.active);
+                }
+            });
+        };
+
         if (actionType === 'buy') {
+            updateActiveClass(buyPercentageButtonsRef, index);
             if (totalAmount > walletBalance) {
                 setNumberOfCoins('');
                 setTotalPurchasePrice(0);
@@ -204,6 +217,7 @@ export default function BuyCoins() {
                 setTotalPurchasePrice(parseFloat(totalAmount.toFixed(2)));
             }
         } else if (actionType === 'sell') {
+            updateActiveClass(sellPercentageButtonsRef, index);
             if (ownedCoins === null || parseFloat(ownedCoins) === 0) {
                 setNumberOfCoins('');
                 setTotalPurchasePrice(0);
@@ -378,21 +392,16 @@ export default function BuyCoins() {
                             />
                         </label>
                         <div className={styles.buttonGroup}>
-                            <button type="button" onClick={() => handlePercentageClick(10, 'buy')}>
-                                10% 매수
-                            </button>
-                            <button type="button" onClick={() => handlePercentageClick(25, 'buy')}>
-                                25% 매수
-                            </button>
-                            <button type="button" onClick={() => handlePercentageClick(50, 'buy')}>
-                                50% 매수
-                            </button>
-                            <button type="button" onClick={() => handlePercentageClick(75, 'buy')}>
-                                75% 매수
-                            </button>
-                            <button type="button" onClick={() => handlePercentageClick(100, 'buy')}>
-                                100% 매수
-                            </button>
+                            {[10, 25, 50, 75, 100].map((percentage, index) => (
+                                <button
+                                    key={percentage}
+                                    type="button"
+                                    ref={(el) => (buyPercentageButtonsRef.current[index] = el)}
+                                    onClick={() => handlePercentageClick(percentage, 'buy', index)}
+                                >
+                                    {percentage}% 매수
+                                </button>
+                            ))}
                         </div>
                         <p>
                             총 금액: {typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(2) : '0.00'}{' '}
@@ -420,21 +429,16 @@ export default function BuyCoins() {
                             />
                         </label>
                         <div className={styles.buttonGroup}>
-                            <button type="button" onClick={() => handlePercentageClick(10, 'sell')}>
-                                10% 매도
-                            </button>
-                            <button type="button" onClick={() => handlePercentageClick(25, 'sell')}>
-                                25% 매도
-                            </button>
-                            <button type="button" onClick={() => handlePercentageClick(50, 'sell')}>
-                                50% 매도
-                            </button>
-                            <button type="button" onClick={() => handlePercentageClick(75, 'sell')}>
-                                75% 매도
-                            </button>
-                            <button type="button" onClick={() => handlePercentageClick(100, 'sell')}>
-                                100% 매도
-                            </button>
+                            {[10, 25, 50, 75, 100].map((percentage, index) => (
+                                <button
+                                    key={percentage}
+                                    type="button"
+                                    ref={(el) => (sellPercentageButtonsRef.current[index] = el)}
+                                    onClick={() => handlePercentageClick(percentage, 'sell', index)}
+                                >
+                                    {percentage}% 매도
+                                </button>
+                            ))}
                         </div>
                         <p>
                             총 금액: {typeof totalPurchasePrice === 'number' ? totalPurchasePrice.toFixed(2) : '0.00'}{' '}

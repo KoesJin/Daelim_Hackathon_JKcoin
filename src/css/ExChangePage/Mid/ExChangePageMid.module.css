@@ -137,12 +137,12 @@
 /* 색상 정의 */
 .priceUp {
     color: rgb(204, 0, 51);
-    animation: highlightr 1.5s forwards;
+    animation: highlight 1.5s forwards;
 }
 
 .priceDown {
     color: rgb(71, 147, 227);
-    animation: highlightb 1.5s forwards;
+    animation: highlight 1.5s forwards;
 }
 
 .priceNeutral {
@@ -153,18 +153,10 @@
     animation: highlight 1.5s forwards;
 }
 
-/* 애니메이션 효과 */
-@keyframes highlightr {
+@keyframes highlight {
     0% {
-        border: rgba(204, 0, 51);
-    }
-    100% {
-        border-bottom-color: #444;
-    }
-}
-@keyframes highlightb {
-    0% {
-        border-color: rgba(71, 147, 227, 1);
+        /* border-bottom-color: rgba(204, 0, 51); */
+        border-bottom-color: rgb(144, 242, 255);
     }
     100% {
         border-bottom-color: #444;

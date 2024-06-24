@@ -3,7 +3,7 @@ import axios from 'axios';
 import { CSSTransition } from 'react-transition-group';
 import ExChangePageHeader from '../component/ExChangePage/Header/ExChangePageHeader';
 import ExChangePageMid from '../component/ExChangePage/Mid/ExChangePageMid';
-import LoadingComponent from '../component/LoadingPage/LoadingComponent'; // 새로 추가된 로딩 컴포넌트
+import LoadingComponent from '../component/LoadingPage/LoadingComponent';
 import styles from '../css/Loading/Loading.module.css';
 import { useOutletContext } from 'react-router-dom';
 
@@ -70,6 +70,8 @@ const ExchangePage = () => {
     );
 
     useEffect(() => {
+        let timeoutId;
+
         const fetchExchangeRate = async () => {
             try {
                 const response = await axios.get('https://api.exchangerate-api.com/v4/latest/USD');
@@ -134,8 +136,11 @@ const ExchangePage = () => {
             fetchData();
         }, 3000);
 
-        return () => clearInterval(intervalId);
-    }, [cryptoSymbols, priceChanges]);
+        return () => {
+            clearInterval(intervalId);
+            clearTimeout(timeoutId);
+        };
+    }, [cryptoSymbols, priceChanges, loading]);
 
     return (
         <>

@@ -146,8 +146,8 @@ const MyCoinPage = () => {
                 <span>{formatNumber(holdings + totalPurchased, 0)} KRW</span>
             </div>
             <div className={styles.assetDetails}>
-                <h2>보유 자산(KRW): {formatNumber(holdings, 0)} KRW</h2>
-                <h2>코인의 총 가치(KRW): {formatNumber(totalPurchased, 0)} KRW</h2>
+                <h2>보유 자산(KRW): {formatNumber(holdings, 4)} </h2>
+                <h2>코인의 총 가치(KRW): {formatNumber(totalPurchased, 4)}</h2>
                 <h2 className={totalProfit > 0 ? styles.profit : totalProfit < 0 ? styles.loss : styles.neutral}>
                     총 손익: {formatNumber(totalProfit, 4)}%
                 </h2>
@@ -160,7 +160,7 @@ const MyCoinPage = () => {
                             <tr>
                                 <th>코인</th>
                                 <th>수량</th>
-                                <th>현재 가격 (KRW)</th>
+                                <th>현재가 (KRW)</th>
                                 <th>가치 (KRW)</th>
                                 <th>손익 (%)</th>
                             </tr>

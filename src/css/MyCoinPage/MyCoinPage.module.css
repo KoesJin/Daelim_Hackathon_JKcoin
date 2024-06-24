@@ -1,13 +1,14 @@
 .container {
     background-color: #282832;
     color: white;
-    padding: 20px 0; /* 양옆 패딩 제거 */
-    padding-top: 20px; /* 상단 패딩 유지 */
-    padding-bottom: 20px; /* 하단 패딩 유지 */
+    padding: 20px 0;
+    padding-top: 20px;
+    padding-bottom: 20px;
     height: 100vh;
     font-family: 'Noto Sans KR', sans-serif;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box; /* 추가 */
 }
 
 .header {
@@ -16,8 +17,6 @@
     align-items: center;
     padding-bottom: 10px;
     border-bottom: 1px solid #30363d;
-    padding-left: 20px;
-    padding-right: 20px;
 }
 
 .title {
@@ -33,56 +32,62 @@
     text-align: center;
     margin-top: 20px;
     margin-bottom: 10px;
-    position: sticky;
-    top: 0;
-    background-color: #282832;
-    z-index: 1;
 }
 
 .totalAssets {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px; /* 이 섹션에 양옆 패딩 추가 */
+    padding: 10px 20px;
     border-bottom: 1px solid #30363d;
 }
 
 .assetDetails {
-    padding: 10px 20px; /* 이 섹션에 양옆 패딩 추가 */
+    padding: 10px 20px;
     border-bottom: 1px solid #30363d;
 }
 
 .coinsList {
     margin-top: 20px;
-    overflow-y: auto; /* 세로 스크롤 활성화 */
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* 여기에 overflow 설정 */
 }
 
 .tableContainer {
-    overflow-y: auto; /* 가로 스크롤 활성화 */
-    width: 100%;
+    margin-top: 20px;
+    flex-grow: 1;
+    overflow-y: auto; /* 여기에도 overflow 설정 */
+    display: flex;
+    flex-direction: column;
 }
 
 .coinTable {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
-    padding: 0; /* 양옆 패딩 제거 */
-    height: 80vh;
+    padding: 0;
+}
+
+.coinTable thead th {
+    position: sticky;
+    top: 0;
+    background-color: rgb(40, 40, 50);
+    color: white;
+    z-index: 1;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: inset 0 1px 0 #ddd, inset 0 -1px 0 #ddd;
 }
 
 .coinTable th,
 .coinTable td {
-    padding: 10px 0; /* 패딩 값 조정 */
+    padding: 10px 0;
     border-bottom: 1px solid #30363d;
     text-align: center;
-    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.coinTable th {
-    background-color: #161b22;
 }
 
 .coinTable td {
@@ -90,15 +95,15 @@
 }
 
 .profit {
-    color: #cd0c22; /* 양수일 때 빨간색 */
+    color: #cd0c22;
 }
 
 .loss {
-    color: #467ed4; /* 음수일 때 파란색 */
+    color: #467ed4;
 }
 
 .neutral {
-    color: white; /* 0일 때 흰색 */
+    color: white;
 }
 
 @media (max-width: 600px) {
@@ -118,7 +123,7 @@
     .coinTable th,
     .coinTable td {
         font-size: 12px;
-        padding: 6px 0; /* 작은 화면에서 패딩 값 조정 */
+        padding: 6px 0;
     }
 }
 

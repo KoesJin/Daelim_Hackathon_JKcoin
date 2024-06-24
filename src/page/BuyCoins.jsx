@@ -199,9 +199,9 @@ export default function BuyCoins() {
         const updateActiveClass = (buttonsRef, activeIndex) => {
             buttonsRef.current.forEach((button, i) => {
                 if (i === activeIndex) {
-                    button.classList.add(styles.active);
+                    button.classList.add(styles.activeButton);
                 } else {
-                    button.classList.remove(styles.active);
+                    button.classList.remove(styles.activeButton);
                 }
             });
         };
@@ -401,7 +401,8 @@ export default function BuyCoins() {
                                     key={percentage}
                                     type="button"
                                     ref={(el) => (buyPercentageButtonsRef.current[index] = el)}
-                                    onClick={() => handlePercentageClick(percentage, 'buy', index)}
+                                    onMouseUp={() => handlePercentageClick(percentage, 'buy', index)}
+                                    className={styles.percentageButton}
                                 >
                                     {percentage}% 매수
                                 </button>
@@ -435,7 +436,8 @@ export default function BuyCoins() {
                                     key={percentage}
                                     type="button"
                                     ref={(el) => (sellPercentageButtonsRef.current[index] = el)}
-                                    onClick={() => handlePercentageClick(percentage, 'sell', index)}
+                                    onMouseUp={() => handlePercentageClick(percentage, 'sell', index)}
+                                    className={styles.percentageButton}
                                 >
                                     {percentage}% 매도
                                 </button>

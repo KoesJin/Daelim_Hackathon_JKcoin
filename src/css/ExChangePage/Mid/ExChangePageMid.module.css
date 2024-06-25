@@ -194,3 +194,11 @@
 .exchangeTable td a:hover {
     color: lightgray;
 }
+
+/* Add this to your ExChangePageMid.module.css */
+
+.noFavorites {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+}

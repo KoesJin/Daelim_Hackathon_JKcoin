@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import styles from '../css/MyCoinPage/MyCoinPage.module.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useOutletContext } from 'react-router-dom';
+import { ReactComponent as SettingsIcon } from '../svg/ExChangePage/Header/settings.svg';
+import SettingsModal from '../component/SettingsIcon/SettingsModal';
 
 const MyCoinPage = () => {
     const [holdings, setHoldings] = useState(0);
@@ -11,6 +13,16 @@ const MyCoinPage = () => {
     const [currentPrices, setCurrentPrices] = useState({});
     const [exchangeRates, setExchangeRates] = useState({});
     const [isDataReady, setIsDataReady] = useState(false);
+
+    const navigate = useNavigate();
+    if (!localStorage.getItem('user_key')) {
+        navigate('/LoginPage');
+    }
+    if (localStorage.getItem('user_key') === 'null') {
+        navigate('/LoginPage');
+    }
+
+    const { isModalOpen, setIsModalOpen } = useOutletContext();
 
     const convertUSDToKRW = useCallback(
         (usdAmount) => {
@@ -101,7 +113,7 @@ const MyCoinPage = () => {
 
             const prices = {};
             response.data.data.forEach((coin) => {
-                prices[coin.id] = parseFloat(coin.priceUsd); // Assuming price is in USD, adjust as per API response
+                prices[coin.id] = parseFloat(coin.priceUsd);
             });
 
             setCurrentPrices(prices);
@@ -135,10 +147,19 @@ const MyCoinPage = () => {
         });
     };
 
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
     return (
         <div className={styles.container}>
             <div className={styles.header}>
                 <div className={styles.title}>코인정보</div>
+                <SettingsIcon className={styles.icon} onClick={openModal} />
             </div>
             <div className={styles.searchBar}></div>
             <div className={styles.totalAssets}>
@@ -208,6 +229,7 @@ const MyCoinPage = () => {
                     </table>
                 </div>
             </div>
+            {isModalOpen && <SettingsModal onClose={closeModal} />}
         </div>
     );
 };

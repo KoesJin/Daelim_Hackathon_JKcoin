@@ -85,36 +85,33 @@ const CoinTrend = () => {
         [exchangeRates]
     );
 
-    const fetchCurrentPrices = useCallback(
-        async (coins) => {
-            try {
-                const coinSymbols = coinNames.join(',');
-                const response = await axios.get(`https://api.coincap.io/v2/assets?ids=${coinSymbols}`);
+    const fetchCurrentPrices = useCallback(async () => {
+        try {
+            const coinSymbols = coinNames.join(',');
+            const response = await axios.get(`https://api.coincap.io/v2/assets?ids=${coinSymbols}`);
 
-                console.log('Current Prices Response:', response.data);
+            console.log('Current Prices Response:', response.data);
 
-                const prices = {};
-                response.data.data.forEach((coin) => {
-                    prices[coin.id] = parseFloat(coin.priceUsd); // Assuming price is in USD, adjust as per API response
-                });
+            const prices = {};
+            response.data.data.forEach((coin) => {
+                prices[coin.id] = parseFloat(coin.priceUsd); // Assuming price is in USD, adjust as per API response
+            });
 
-                setCurrentPrices(prices);
+            setCurrentPrices(prices);
 
-                const exchangeRateResponse = await axios.get('https://api.exchangerate-api.com/v4/latest/USD');
+            const exchangeRateResponse = await axios.get('https://api.exchangerate-api.com/v4/latest/USD');
 
-                console.log('Exchange Rates Response:', exchangeRateResponse.data);
+            console.log('Exchange Rates Response:', exchangeRateResponse.data);
 
-                if (exchangeRateResponse.data && exchangeRateResponse.data.rates) {
-                    setExchangeRates(exchangeRateResponse.data.rates);
-                } else {
-                    console.error('Failed to fetch exchange rates');
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
+            if (exchangeRateResponse.data && exchangeRateResponse.data.rates) {
+                setExchangeRates(exchangeRateResponse.data.rates);
+            } else {
+                console.error('Failed to fetch exchange rates');
             }
-        },
-        [coinNames]
-    );
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }, [coinNames]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -136,13 +133,9 @@ const CoinTrend = () => {
 
                 console.log('Total Value Response:', totalValueResponse.data);
 
-                if (totalValueResponse.data.valid) {
-                    setCoinData(totalValueResponse.data.totalCoinData);
+                await fetchCurrentPrices();
 
-                    await fetchCurrentPrices(totalValueResponse.data.totalCoinData);
-                } else {
-                    console.error('Invalid user_key for total coin value');
-                }
+                setCoinData(coinNames.map((coinName) => ({ coinName, history: [] })));
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -154,7 +147,7 @@ const CoinTrend = () => {
         }, 3000);
 
         return () => clearInterval(intervalId);
-    }, [fetchCurrentPrices]);
+    }, [fetchCurrentPrices, coinNames]);
 
     const formatNumber = (number, decimals = 0) => {
         if (number === undefined || number === null) {

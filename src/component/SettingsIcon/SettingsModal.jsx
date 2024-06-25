@@ -14,8 +14,8 @@ const SettingsModal = ({ onClose }) => {
                 <h2 className={styles.modalTitle}>설정</h2>
                 <ul className={styles.list}>
                     <li className={styles.listItem}>
-                        <Link to="/adminPage" className={styles.link}>
-                            관리자 페이지
+                        <Link to="a" className={styles.link}>
+                            준비중입니다...
                         </Link>
                     </li>
                     <li className={styles.listItem}>

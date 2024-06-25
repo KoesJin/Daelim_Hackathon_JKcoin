@@ -21,17 +21,25 @@ body {
 
 .header {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-bottom: 10px;
+    justify-content: center; /* 중앙 정렬을 위한 설정 */
+    align-items: center; /* 세로 정렬을 위한 설정 */
+    padding-bottom: 50px;
     border-bottom: 1px solid #444;
+    position: relative; /* 위치 조정을 위한 설정 */
 }
 
 .title {
     font-size: 1.5rem;
     font-weight: bold;
     text-align: center;
-    margin-bottom: 10px;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    fill: white; /* 아이콘 색상을 현재 텍스트 색상과 일치 */
+    position: absolute; /* 절대 위치를 사용하여 오른쪽에 위치시킴 */
+    right: 20px; /* 오른쪽 여백 설정 */
 }
 
 .Midtitle {

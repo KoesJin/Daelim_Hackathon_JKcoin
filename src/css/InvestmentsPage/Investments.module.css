@@ -1,8 +1,7 @@
 .container {
     background-color: #282832;
     color: white;
-    padding: 20px;
-    padding-top: 0px;
+    padding: 10px 20px 10px 20px;
     height: calc(100vh - 10vh);
     font-family: 'Noto Sans KR', sans-serif;
     display: flex;
@@ -18,7 +17,7 @@
     font-size: 1.5rem;
     font-weight: bold;
     text-align: center;
-    margin-bottom: 10px;
+    margin: 0 0 10px 0px;
 }
 
 .Midtitle {

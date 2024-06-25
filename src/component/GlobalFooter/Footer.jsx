@@ -18,8 +18,8 @@ function Footer() {
             case '/investments':
                 setActiveButton('투자내역');
                 break;
-            case '/deposits':
-                setActiveButton('입출금');
+            case '/cointrend':
+                setActiveButton('코인동향');
                 break;
             case '/more':
                 setActiveButton('더보기');
@@ -54,11 +54,11 @@ function Footer() {
                     투자내역
                 </Link>
                 <Link
-                    to="/deposits"
-                    className={`${styles.footerButton} ${activeButton === '입출금' ? styles.active : ''}`}
-                    onClick={() => setActiveButton('입출금')}
+                    to="/cointrend"
+                    className={`${styles.footerButton} ${activeButton === '코인동향' ? styles.active : ''}`}
+                    onClick={() => setActiveButton('코인동향')}
                 >
-                    입출금
+                    코인동향
                 </Link>
                 <Link
                     to="/more"

@@ -10,6 +10,7 @@ import AdminPage from '../page/AdminPage';
 import ErrorPage from '../page/ErrorPage';
 import MyCoinPage from '../page/MyCoinPage';
 import Investments from '../page/InvestmentsPage';
+import CoinTrend from '../page/CoinTrendPage';
 
 const router = createBrowserRouter(
     [
@@ -45,6 +46,10 @@ const router = createBrowserRouter(
                 {
                     path: '/investments',
                     element: <Investments />,
+                },
+                {
+                    path: '/cointrend',
+                    element: <CoinTrend />,
                 },
             ],
         },

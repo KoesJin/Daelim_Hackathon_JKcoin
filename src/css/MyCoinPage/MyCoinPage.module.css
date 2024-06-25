@@ -24,7 +24,7 @@ body {
     justify-content: center;
     align-items: center;
     padding-bottom: 10px;
-    border-bottom: 1px solid #30363d;
+    border-bottom: 1px solid #444;
 }
 
 .title {
@@ -47,12 +47,12 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    border-bottom: 1px solid #30363d;
+    border-bottom: 1px solid #444;
 }
 
 .assetDetails {
     padding: 10px 20px;
-    border-bottom: 1px solid #30363d;
+    border-bottom: 1px solid #444;
 }
 
 .coinsList {

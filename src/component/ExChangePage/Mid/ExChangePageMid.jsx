@@ -69,6 +69,16 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
                     className={`${styles.tab} ${activeTab === 'favorites' ? styles.active : ''}`}
                     onClick={() => {
                         setActiveTab('favorites');
+                        let currentValue = localStorage.getItem('favorites_fa');
+                        if (!currentValue) {
+                            // If currentValue is null (not set in localStorage), default to "1"
+                            currentValue = '1';
+                        } else {
+                            // Toggle between "0" and "1"
+                            currentValue = currentValue === '1' ? '0' : '1';
+                        }
+                        localStorage.setItem('favorites_fa', currentValue);
+                        navigate('/');
                     }}
                 >
                     관심

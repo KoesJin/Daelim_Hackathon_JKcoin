@@ -11,6 +11,7 @@ import ErrorPage from '../page/ErrorPage';
 import MyCoinPage from '../page/MyCoinPage';
 import Investments from '../page/InvestmentsPage';
 import CoinTrend from '../page/CoinTrendPage';
+import SeeMorePage from '../page/SeeMorePage';
 
 const router = createBrowserRouter(
     [
@@ -50,6 +51,10 @@ const router = createBrowserRouter(
                 {
                     path: '/cointrend',
                     element: <CoinTrend />,
+                },
+                {
+                    path: '/seemore',
+                    element: <SeeMorePage />,
                 },
             ],
         },

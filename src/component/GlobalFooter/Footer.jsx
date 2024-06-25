@@ -21,7 +21,7 @@ function Footer() {
             case '/cointrend':
                 setActiveButton('코인동향');
                 break;
-            case '/more':
+            case '/seemore':
                 setActiveButton('더보기');
                 break;
             default:
@@ -61,7 +61,7 @@ function Footer() {
                     코인동향
                 </Link>
                 <Link
-                    to="/more"
+                    to="/seemore"
                     className={`${styles.footerButton} ${activeButton === '더보기' ? styles.active : ''}`}
                     onClick={() => setActiveButton('더보기')}
                 >

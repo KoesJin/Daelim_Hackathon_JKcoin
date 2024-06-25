@@ -1,0 +1,185 @@
+body {
+    overflow: hidden;
+}
+
+.container {
+    background-color: #282832;
+    color: white;
+    padding: 70px 20px 20px 20px; /* 헤더 높이를 고려하여 상단 패딩 추가 */
+    height: calc(100vh - 70px); /* 헤더 높이를 고려하여 높이 조정 */
+    font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow-y: auto; /* 내부 스크롤 설정 */
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background-color: rgb(40, 40, 50);
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    flex: 1;
+    text-align: center;
+}
+
+.userInfo {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #444;
+}
+
+.userImage {
+    width: 60px;
+    height: 60px;
+    background-color: #555;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.userDetails {
+    display: flex;
+    flex-direction: column;
+}
+
+.userName {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.userStatus {
+    color: #00cc00;
+}
+
+.notice {
+    padding: 20px;
+    border-bottom: 1px solid #444;
+}
+
+.notice h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.notice ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.notice li {
+    margin-bottom: 10px;
+}
+
+.policy {
+    padding: 20px;
+    border-bottom: 1px solid #444;
+}
+
+.policy h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.policy ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.policy li {
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.policy p {
+    margin-top: 20px;
+}
+
+.customerCenter {
+    padding: 20px;
+    text-align: center;
+}
+
+.customerCenter button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #555;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.modalContent {
+    background-color: #fff;
+    color: #000;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    float: right;
+}
+
+.fadeEnter {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+.fadeEnterActive {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms ease-in, transform 300ms ease-in;
+}
+.fadeExit {
+    opacity: 1;
+    transform: translateY(0);
+}
+.fadeExitActive {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 300ms ease-out, transform 300ms ease-out;
+}
+@media (max-width: 768px) {
+    .title {
+        font-size: 1.3em;
+        font-weight: bold;
+    }
+}

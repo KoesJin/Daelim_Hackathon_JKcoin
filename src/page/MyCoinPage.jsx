@@ -46,7 +46,8 @@ const MyCoinPage = () => {
         let total_cash = 0;
 
         coinData.forEach((coin) => {
-            if (coin.totalPurchased2 - coin.totalSold2 !== 0) {
+            const totalAmount1 = coin.totalPurchased2 - coin.totalSold2;
+            if (totalAmount1 > 0.0001) {
                 totalPurchased2add +=
                     (coin.totalPurchased2 - coin.totalSold2) * convertUSDToKRW(currentPrices[coin.coinName]) || 0;
                 totalPurchasedadd += coin.totalPurchased - coin.totalSold;
@@ -206,7 +207,7 @@ const MyCoinPage = () => {
                                 <tbody>
                                     {coinData.map((coin) => {
                                         const currentPrice = currentPrices[coin.coinName];
-                                        if (coin.totalPurchased2 - coin.totalSold2 !== 0) {
+                                        if (coin.totalPurchased2 - coin.totalSold2 > 0.0001) {
                                             const totalAmount = coin.totalPurchased2 - coin.totalSold2;
                                             const convertedPrice = convertUSDToKRW(currentPrice);
                                             const totalValue = totalAmount * convertedPrice;

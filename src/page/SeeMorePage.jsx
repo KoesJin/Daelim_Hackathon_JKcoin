@@ -45,6 +45,9 @@ const SeeMorePage = () => {
                     <li onClick={() => navigate('/investments')}>입출금 현황</li>
                 </ul>
                 <p>앱 버전 1.0.0.0</p>
+                <p onClick={() => navigate('/adminpage')} className={styles.linkText}>
+                    관리자페이지
+                </p>
             </div>
             <div className={styles.customerCenter}>
                 <button>고객센터</button>

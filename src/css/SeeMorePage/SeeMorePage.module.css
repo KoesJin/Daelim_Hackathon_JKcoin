@@ -183,3 +183,15 @@ body {
         font-weight: bold;
     }
 }
+
+.linkText {
+    color: white;
+    text-decoration: none; /* 밑줄 제거 */
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.linkText:hover {
+    color: #00cc00; /* 호버 시 색상 변경 */
+}

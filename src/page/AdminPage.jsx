@@ -72,7 +72,7 @@ export default function AdminPage() {
 
     return (
         <div className={styles.container}>
-            <Link to="/" className={styles.backButton}>
+            <Link to="/seemore" className={styles.backButton}>
                 <BackIcon className={styles.backIcon} />
             </Link>
             <div className={styles.title}>관리자 페이지</div>

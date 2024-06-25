@@ -6,32 +6,18 @@ import { Link, useNavigate } from 'react-router-dom';
 const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
     const [activeTab, setActiveTab] = useState('KRW');
     const [previousData, setPreviousData] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filteredData, setFilteredData] = useState([]);
     const navigate = useNavigate();
-
     if (!localStorage.getItem('user_key')) {
         navigate('/LoginPage');
     }
     if (localStorage.getItem('user_key') === 'null') {
         navigate('/LoginPage');
     }
-
     useEffect(() => {
         if (cryptoData && cryptoData.length > 0) {
             setPreviousData((prevData) => cryptoData.map((coin, index) => coin || prevData[index]));
         }
     }, [cryptoData]);
-
-    useEffect(() => {
-        const filtered = previousData.filter((coin) => {
-            return (
-                coin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                coin.symbol.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-        });
-        setFilteredData(filtered);
-    }, [searchTerm, previousData]);
 
     const formatNumber = (number, decimals = 0) => {
         return number.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -41,12 +27,7 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
         <div className={styles.content}>
             <div className={styles.searchBar}>
                 <SearchIcon className={styles.searchIcon} />
-                <input
-                    type="text"
-                    placeholder="코인명/심볼 검색"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
+                <input type="text" placeholder="코인명/심볼 검색" />
             </div>
             <div className={styles.tabs}>
                 <button
@@ -69,6 +50,16 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
                     className={`${styles.tab} ${activeTab === 'favorites' ? styles.active : ''}`}
                     onClick={() => {
                         setActiveTab('favorites');
+                        let currentValue = localStorage.getItem('favorites_fa');
+                        if (!currentValue) {
+                            // If currentValue is null (not set in localStorage), default to "1"
+                            currentValue = '1';
+                        } else {
+                            // Toggle between "0" and "1"
+                            currentValue = currentValue === '1' ? '0' : '1';
+                        }
+                        localStorage.setItem('favorites_fa', currentValue);
+                        navigate('/');
                     }}
                 >
                     관심
@@ -85,7 +76,7 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredData.map((coin, index) => {
+                        {previousData.map((coin, index) => {
                             if (!coin) return null;
 
                             const currentPrice = parseFloat(coin.priceUsd);
@@ -103,7 +94,6 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
                                     : changeType === 'down'
                                     ? styles.changeDown
                                     : styles.changeNeutral;
-
                             return (
                                 <tr key={`${coin.id}-${priceChanges[coin.id]?.type}`}>
                                     <td>
@@ -112,13 +102,13 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
                                         </Link>
                                     </td>
                                     <td className={priceClass}>
-                                        {activeTab === 'KRW' || activeTab === 'favorites'
+                                        {activeTab === 'KRW'
                                             ? `${formatNumber(currentPrice * exchangeRate)}`
                                             : `${formatNumber(currentPrice, 2)}`}
                                     </td>
                                     <td className={changeClass}>{changePercent.toFixed(2)}%</td>
                                     <td>
-                                        {activeTab === 'KRW' || activeTab === 'favorites'
+                                        {activeTab === 'KRW'
                                             ? `${formatNumber(
                                                   (parseFloat(coin.volumeUsd24Hr) * exchangeRate) / 1000000
                                               )}백만`

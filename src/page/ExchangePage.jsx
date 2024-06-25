@@ -43,65 +43,61 @@ const ExchangePage = () => {
 
     const cryptoSymbols2 = useMemo(() => [...favorites], [favorites]);
 
-    const condition = true;
-
-    const cryptoSymbols = useMemo(() => {
-        if (condition) {
-            return [
-                'bitcoin',
-                'solana',
-                'ethereum',
-                'stacks',
-                'aelf',
-                'dogecoin',
-                'status',
-                'tether',
-                'litecoin',
-                'cardano',
-                'chainlink',
-                'vechain',
-                'stellar',
-                'cosmos',
-                'tron',
-                'polkadot',
-                'uniswap',
-                'aave',
-                'algorand',
-                'avalanche',
-                'monero',
-                'tezos',
-                'nem',
-                'dash',
-                'iota',
-                'zcash',
-                'decred',
-                'qtum',
-                'waves',
-                'maker',
-                'compound',
-                'yearn-finance',
-                'balancer',
-                'curve-dao-token',
-                'ren',
-                'loopring',
-                'zilliqa',
-                'holo',
-                'theta',
-                'enjin-coin',
-                'bancor',
-                'ocean-protocol',
-                'serum',
-                'sushiswap',
-                '1inch',
-                'pancakeswap',
-                'bakerytoken',
-                'bittorrent',
-            ];
-        } else {
-            return cryptoSymbols2;
-        }
-    }, [condition, cryptoSymbols2]);
-
+    const cryptoSymbols1 = useMemo(
+        () => [
+            'bitcoin',
+            'solana',
+            'ethereum',
+            'stacks',
+            'aelf',
+            'dogecoin',
+            'status',
+            'tether',
+            'litecoin',
+            'cardano',
+            'chainlink',
+            'vechain',
+            'stellar',
+            'cosmos',
+            'tron',
+            'polkadot',
+            'uniswap',
+            'aave',
+            'algorand',
+            'avalanche',
+            'monero',
+            'tezos',
+            'nem',
+            'dash',
+            'iota',
+            'zcash',
+            'decred',
+            'qtum',
+            'waves',
+            'maker',
+            'compound',
+            'yearn-finance',
+            'balancer',
+            'curve-dao-token',
+            'ren',
+            'loopring',
+            'zilliqa',
+            'holo',
+            'theta',
+            'enjin-coin',
+            'bancor',
+            'ocean-protocol',
+            'serum',
+            'sushiswap',
+            '1inch',
+            'pancakeswap',
+            'bakerytoken',
+            'bittorrent',
+        ],
+        []
+    );
+    const favoritesFa = localStorage.getItem('favorites_fa');
+    const cryptoSymbols = favoritesFa === '1' ? cryptoSymbols1 : cryptoSymbols2;
     useEffect(() => {
         let timeoutId;
 

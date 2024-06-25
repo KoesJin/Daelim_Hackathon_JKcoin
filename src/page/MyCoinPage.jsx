@@ -15,7 +15,7 @@ const MyCoinPage = () => {
     const [currentPrices, setCurrentPrices] = useState({});
     const [exchangeRates, setExchangeRates] = useState({});
     const [isDataReady, setIsDataReady] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [initialLoading, setInitialLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const navigate = useNavigate();
@@ -61,8 +61,8 @@ const MyCoinPage = () => {
     }, [coinData, currentPrices, convertUSDToKRW]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
+        const fetchData = async (isInitialLoad = false) => {
+            if (isInitialLoad) setInitialLoading(true);
             try {
                 const userKey = localStorage.getItem('user_key');
                 if (!userKey) {
@@ -103,13 +103,13 @@ const MyCoinPage = () => {
                 console.error('Error fetching data:', error);
                 setError('Error fetching data');
             } finally {
-                setLoading(false);
+                if (isInitialLoad) setInitialLoading(false);
             }
         };
 
-        fetchData();
+        fetchData(true); // Initial load
         const intervalId = setInterval(() => {
-            fetchData();
+            fetchData(); // Subsequent loads
         }, 3000);
 
         return () => clearInterval(intervalId);
@@ -167,7 +167,7 @@ const MyCoinPage = () => {
     return (
         <>
             <CSSTransition
-                in={!loading && !error}
+                in={!initialLoading && !error}
                 timeout={300}
                 classNames={{
                     enter: styles.fadeEnter,
@@ -260,7 +260,7 @@ const MyCoinPage = () => {
                 </div>
             </CSSTransition>
             <CSSTransition
-                in={loading && !error}
+                in={initialLoading && !error}
                 timeout={300}
                 classNames={{
                     enter: styles.fadeEnter,

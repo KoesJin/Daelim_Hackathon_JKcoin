@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
+import { CSSTransition } from 'react-transition-group';
 import styles from '../css/MyCoinPage/MyCoinPage.module.css';
 import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { ReactComponent as SettingsIcon } from '../svg/ExChangePage/Header/settings.svg';
 import SettingsModal from '../component/SettingsIcon/SettingsModal';
+import LoadingComponent from '../component/LoadingPage/LoadingComponent';
 
 const MyCoinPage = () => {
     const [holdings, setHoldings] = useState(0);
@@ -13,6 +15,8 @@ const MyCoinPage = () => {
     const [currentPrices, setCurrentPrices] = useState({});
     const [exchangeRates, setExchangeRates] = useState({});
     const [isDataReady, setIsDataReady] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const navigate = useNavigate();
     if (!localStorage.getItem('user_key')) {
@@ -57,6 +61,7 @@ const MyCoinPage = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             try {
                 const userKey = localStorage.getItem('user_key');
                 if (!userKey) {
@@ -95,15 +100,13 @@ const MyCoinPage = () => {
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
+                setError('Error fetching data');
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchData();
-        const intervalId = setInterval(() => {
-            fetchData();
-        }, 3000);
-
-        return () => clearInterval(intervalId);
     }, []);
 
     const fetchCurrentPrices = async (coins) => {
@@ -156,81 +159,115 @@ const MyCoinPage = () => {
     };
 
     return (
-        <div className={styles.container}>
-            <div className={styles.header}>
-                <div className={styles.title}>코인정보</div>
-                <SettingsIcon className={styles.icon} onClick={openModal} />
-            </div>
-            <div className={styles.searchBar}></div>
-            <div className={styles.totalAssets}>
-                <span>총 보유자산</span>
-                <span>{formatNumber(holdings + totalPurchased, 2)} KRW</span>
-            </div>
-            <div className={styles.assetDetails}>
-                <h2>보유 자산: {formatNumber(holdings, 2)} </h2>
-                <h2>코인의 총 가치: {formatNumber(totalPurchased, 2)}</h2>
-                <h2 className={totalProfit > 0 ? styles.profit : totalProfit < 0 ? styles.loss : styles.neutral}>
-                    총 손익: {formatNumber(totalProfit, 4)}%
-                </h2>
-            </div>
-            <div className={styles.coinsList}>
-                <div className={styles.Midtitle}>보유 코인</div>
-                <div className={styles.tableContainer}>
-                    <table className={styles.coinTable}>
-                        <thead>
-                            <tr>
-                                <th>코인</th>
-                                <th>수량</th>
-                                <th>현재가 (KRW)</th>
-                                <th>가치 (KRW)</th>
-                                <th>손익 (%)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {coinData.map((coin) => {
-                                const currentPrice = currentPrices[coin.coinName];
-                                if (coin.totalPurchased2 - coin.totalSold2 !== 0) {
-                                    const totalAmount = coin.totalPurchased2 - coin.totalSold2;
-                                    const convertedPrice = convertUSDToKRW(currentPrice);
-                                    const totalValue = totalAmount * convertedPrice;
-                                    const percentageChange =
-                                        totalAmount === 0
-                                            ? '0%'
-                                            : ((totalValue - (coin.totalPurchased - coin.totalSold)) /
-                                                  (coin.totalPurchased - coin.totalSold)) *
-                                              100;
-                                    const profitClass =
-                                        percentageChange > 0
-                                            ? styles.profit
-                                            : percentageChange < 0
-                                            ? styles.loss
-                                            : styles.neutral;
+        <>
+            <CSSTransition
+                in={!loading && !error}
+                timeout={300}
+                classNames={{
+                    enter: styles.fadeEnter,
+                    enterActive: styles.fadeEnterActive,
+                    exit: styles.fadeExit,
+                    exitActive: styles.fadeExitActive,
+                }}
+                unmountOnExit
+            >
+                <div className={styles.container}>
+                    <div className={styles.header}>
+                        <div className={styles.title}>코인정보</div>
+                        <SettingsIcon className={styles.icon} onClick={openModal} />
+                    </div>
+                    <div className={styles.searchBar}></div>
+                    <div className={styles.totalAssets}>
+                        <span>총 보유자산</span>
+                        <span>{formatNumber(holdings + totalPurchased, 2)} KRW</span>
+                    </div>
+                    <div className={styles.assetDetails}>
+                        <h2>보유 자산: {formatNumber(holdings, 2)} </h2>
+                        <h2>코인의 총 가치: {formatNumber(totalPurchased, 2)}</h2>
+                        <h2
+                            className={totalProfit > 0 ? styles.profit : totalProfit < 0 ? styles.loss : styles.neutral}
+                        >
+                            총 손익: {formatNumber(totalProfit, 4)}%
+                        </h2>
+                    </div>
+                    <div className={styles.coinsList}>
+                        <div className={styles.Midtitle}>보유 코인</div>
+                        <div className={styles.tableContainer}>
+                            <table className={styles.coinTable}>
+                                <thead>
+                                    <tr>
+                                        <th>코인</th>
+                                        <th>수량</th>
+                                        <th>현재가 (KRW)</th>
+                                        <th>가치 (KRW)</th>
+                                        <th>손익 (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {coinData.map((coin) => {
+                                        const currentPrice = currentPrices[coin.coinName];
+                                        if (coin.totalPurchased2 - coin.totalSold2 !== 0) {
+                                            const totalAmount = coin.totalPurchased2 - coin.totalSold2;
+                                            const convertedPrice = convertUSDToKRW(currentPrice);
+                                            const totalValue = totalAmount * convertedPrice;
+                                            const percentageChange =
+                                                totalAmount === 0
+                                                    ? '0%'
+                                                    : ((totalValue - (coin.totalPurchased - coin.totalSold)) /
+                                                          (coin.totalPurchased - coin.totalSold)) *
+                                                      100;
+                                            const profitClass =
+                                                percentageChange > 0
+                                                    ? styles.profit
+                                                    : percentageChange < 0
+                                                    ? styles.loss
+                                                    : styles.neutral;
 
-                                    return (
-                                        <tr key={coin.coinName}>
-                                            <td>
-                                                <Link
-                                                    to={`/buycoins?coinName=${encodeURIComponent(coin.coinName)}`}
-                                                    className={styles.link}
-                                                >
-                                                    {coin.coinName}
-                                                </Link>
-                                            </td>
-                                            <td>{formatNumber(totalAmount, 4)}</td>
-                                            <td>{formatNumber(convertedPrice, 4)}</td>
-                                            <td>{formatNumber(totalValue, 4)}</td>
-                                            <td className={profitClass}>{formatNumber(percentageChange, 4)}%</td>
-                                        </tr>
-                                    );
-                                }
-                                return null;
-                            })}
-                        </tbody>
-                    </table>
+                                            return (
+                                                <tr key={coin.coinName}>
+                                                    <td>
+                                                        <Link
+                                                            to={`/buycoins?coinName=${encodeURIComponent(
+                                                                coin.coinName
+                                                            )}`}
+                                                            className={styles.link}
+                                                        >
+                                                            {coin.coinName}
+                                                        </Link>
+                                                    </td>
+                                                    <td>{formatNumber(totalAmount, 4)}</td>
+                                                    <td>{formatNumber(convertedPrice, 4)}</td>
+                                                    <td>{formatNumber(totalValue, 4)}</td>
+                                                    <td className={profitClass}>
+                                                        {formatNumber(percentageChange, 4)}%
+                                                    </td>
+                                                </tr>
+                                            );
+                                        }
+                                        return null;
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {isModalOpen && <SettingsModal onClose={closeModal} />}
                 </div>
-            </div>
-            {isModalOpen && <SettingsModal onClose={closeModal} />}
-        </div>
+            </CSSTransition>
+            <CSSTransition
+                in={loading && !error}
+                timeout={300}
+                classNames={{
+                    enter: styles.fadeEnter,
+                    enterActive: styles.fadeEnterActive,
+                    exit: styles.fadeExit,
+                    exitActive: styles.fadeExitActive,
+                }}
+                unmountOnExit
+            >
+                <LoadingComponent />
+            </CSSTransition>
+            {error && <div className={styles.error}>{error}</div>}
+        </>
     );
 };
 

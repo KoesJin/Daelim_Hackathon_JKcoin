@@ -1,23 +1,54 @@
+body {
+    overflow: hidden;
+}
+
 .container {
     background-color: #282832;
     color: white;
-    padding: 10px 20px 10px 20px;
-    height: calc(100vh - 10vh);
+    padding: 70px 0 20px 0; /* 헤더 높이를 고려하여 상단 패딩 추가 */
+    height: calc(100vh - 70px); /* 헤더 높이를 고려하여 높이 조정 */
     font-family: 'Noto Sans KR', sans-serif;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    overflow: hidden; /* 전체 페이지에서 스크롤을 막기 위한 설정 */
+    position: relative;
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between; /* 중앙 정렬과 오른쪽 정렬을 위한 설정 */
+    align-items: center;
+    padding: 10px;
+    background-color: rgb(40, 40, 50);
+    color: white;
+    position: fixed; /* 상단 고정 */
+    top: 0; /* 상단 고정 */
+    left: 0; /* 왼쪽 고정 */
+    right: 0; /* 오른쪽 고정 */
+    z-index: 1000; /* 다른 요소들보다 위에 위치 */
+    width: 100%; /* 전체 너비 */
+    max-width: 1200px; /* 최대 너비 설정 (원하는 경우) */
+    box-sizing: border-box; /* 패딩을 포함하여 박스 크기 계산 */
+    margin: 0 auto; /* 가운데 정렬 */
 }
 
 .title {
     font-size: 1.5rem;
     font-weight: bold;
     text-align: center;
-    margin: 0 0 10px 0px;
+    flex: 1; /* 중앙 정렬을 위한 설정 */
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    fill: white; /* 아이콘 색상을 현재 텍스트 색상과 일치 */
+    position: absolute; /* 절대 위치를 사용하여 오른쪽에 위치시킴 */
+    right: 20px; /* 오른쪽 여백 설정 */
 }
 
 .Midtitle {
@@ -36,7 +67,7 @@
     padding: 20px;
     border: 2px solid #ccc;
     border-radius: 8px;
-    margin-top: 20px;
+    margin: 0 20px;
 }
 
 .historyItem {

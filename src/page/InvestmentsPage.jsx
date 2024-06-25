@@ -1,10 +1,29 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import styles from '../css/InvestmentsPage/Investments.module.css'; // CSS 파일을 import 합니다.
+import { ReactComponent as SettingsIcon } from '../svg/ExChangePage/Header/settings.svg';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import SettingsModal from '../component/SettingsIcon/SettingsModal';
 
 export default function Investments() {
     const [history, setHistory] = useState([]);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
+    if (!localStorage.getItem('user_key')) {
+        navigate('/LoginPage');
+    }
+    if (localStorage.getItem('user_key') === 'null') {
+        navigate('/LoginPage');
+    }
+    const { isModalOpen, setIsModalOpen } = useOutletContext();
+
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
 
     const fetchInvestmentsHistory = useCallback(async () => {
         try {
@@ -55,7 +74,10 @@ export default function Investments() {
     return (
         <>
             <div className={styles.container}>
-                <h2 className={styles.title}>투자 내역</h2>
+                <div className={styles.header}>
+                    <div className={styles.title}>투자내역</div>
+                    <SettingsIcon className={styles.icon} onClick={openModal} />
+                </div>
 
                 {error && <p className={styles.errorMessage}>{error}</p>}
 
@@ -72,6 +94,7 @@ export default function Investments() {
                     ))}
                 </div>
             </div>
+            {isModalOpen && <SettingsModal onClose={closeModal} />}
         </>
     );
 }

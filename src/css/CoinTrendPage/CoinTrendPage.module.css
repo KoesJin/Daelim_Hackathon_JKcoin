@@ -1,7 +1,7 @@
 .container {
     background-color: #282832;
     color: white;
-    padding: 20px;
+    padding: 10px 20px 20px 20px;
     height: calc(100vh - 8vh);
     font-family: 'Noto Sans KR', sans-serif;
     display: flex;
@@ -16,7 +16,7 @@
 
 .header {
     text-align: center;
-    margin-bottom: 20px;
+    margin: 0 0 20px 0;
 }
 
 .title {
@@ -60,7 +60,7 @@
 
 @media (max-width: 600px) {
     .title {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
     }
 
     .coinName,

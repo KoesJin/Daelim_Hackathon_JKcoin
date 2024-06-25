@@ -96,7 +96,7 @@ const Overlay = styled.div`
     font-size: 2em;
     text-align: center;
     pointer-events: none;
-    opacity: ${(props) => (props.visible ? 1 : 0)};
+    opacity: ${(props) => (props.$visible ? 1 : 0)};
     transition: opacity 0.5s ease-in-out;
 `;
 
@@ -172,7 +172,7 @@ function Root() {
                 {!isLoginPage && !isBuyCoinsPage && !isModalOpen && <Footer />}
             </PageContainer>
 
-            <Overlay visible={isLandscape}>기기를 세로로 돌려주세요.</Overlay>
+            <Overlay $visible={isLandscape}>기기를 세로로 돌려주세요.</Overlay>
         </>
     );
 }

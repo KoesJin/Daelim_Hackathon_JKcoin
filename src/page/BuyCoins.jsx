@@ -15,7 +15,7 @@ export default function BuyCoins() {
     const [showBuyForm, setShowBuyForm] = useState(true);
     const [showSellForm, setShowSellForm] = useState(false);
     const [ownedCoins, setOwnedCoins] = useState(null);
-    const [isStarred, setIsStarred] = useState(false); // State to toggle star icon color
+    const [isStarred, setIsStarred] = useState(false);
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const coinName = searchParams.get('coinName')?.toLowerCase();
@@ -240,7 +240,7 @@ export default function BuyCoins() {
             setTotalPurchasePrice(0);
             alert('잔액이 부족합니다.');
         } else {
-            setNumberOfCoins(coins.toFixed(11) - 0.00000000001); // Convert to string with fixed decimals
+            setNumberOfCoins(coins.toFixed(11) - 0.00000000001);
             setTotalPurchasePrice(totalPrice);
         }
     };
@@ -359,14 +359,13 @@ export default function BuyCoins() {
             try {
                 let baseURL = '';
                 if (process.env.NODE_ENV === 'development') {
-                    // If in development environment, use local IP
                     baseURL = 'http://121.139.20.242:5011';
                 }
-                const response = await axios.get(`${baseURL}/api/favorites_select`); // fa 테이블 데이터를 가져오는 API 호출
+                const response = await axios.get(`${baseURL}/api/favorites_select`);
                 if (response.data.valid === true) {
-                    setIsStarred(true); // user_key와 coin 값이 있으면 false로 설정
+                    setIsStarred(true);
                 } else {
-                    setIsStarred(false); // 없으면 true로 설정
+                    setIsStarred(false);
                 }
             } catch (error) {
                 console.error('데이터를 가져오는 중 오류 발생:', error);

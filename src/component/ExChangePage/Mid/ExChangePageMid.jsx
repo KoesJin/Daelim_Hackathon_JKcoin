@@ -8,7 +8,6 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
     const [previousData, setPreviousData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredData, setFilteredData] = useState([]);
-    const [buttonText, setButtonText] = useState('관심');
     const navigate = useNavigate();
 
     if (!localStorage.getItem('user_key')) {
@@ -19,27 +18,8 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
     }
 
     useEffect(() => {
-        let currentValue = localStorage.getItem('favorites_fa');
-        if (!currentValue) {
-            currentValue = '1';
-        }
-        setButtonText(currentValue === '1' ? '전체' : '관심');
-    }, []);
-
-    const handleClick = () => {
-        let currentValue = localStorage.getItem('favorites_fa');
-        if (!currentValue) {
-            currentValue = '1';
-        } else {
-            currentValue = currentValue === '1' ? '0' : '1';
-        }
-        localStorage.setItem('favorites_fa', currentValue);
-        setButtonText(currentValue === '1' ? '전채' : '관심');
-    };
-
-    useEffect(() => {
         if (cryptoData && cryptoData.length > 0) {
-            setPreviousData(() => cryptoData.filter((coin) => coin !== undefined));
+            setPreviousData((prevData) => cryptoData.map((coin, index) => coin || prevData[index]));
         }
     }, [cryptoData]);
 
@@ -88,12 +68,10 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
                 <button
                     className={`${styles.tab} ${activeTab === 'favorites' ? styles.active : ''}`}
                     onClick={() => {
-                        handleClick();
                         setActiveTab('favorites');
-                        navigate('/');
                     }}
                 >
-                    {buttonText}
+                    관심
                 </button>
             </div>
             <div className={styles.exchangeTableContainer}>

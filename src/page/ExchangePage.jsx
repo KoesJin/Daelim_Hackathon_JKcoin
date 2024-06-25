@@ -15,7 +15,6 @@ const ExchangePage = () => {
     const [priceChanges, setPriceChanges] = useState({});
     const { setIsModalOpen } = useOutletContext();
     const [favorites, setFavorites] = useState([]);
-    const [condition, setCondition] = useState(false);
 
     useEffect(() => {
         const fetchFavorites = async () => {
@@ -42,16 +41,9 @@ const ExchangePage = () => {
         fetchFavorites();
     }, []);
 
-    useEffect(() => {
-        const favoritesFa = localStorage.getItem('favorites_fa');
-        if (favoritesFa === '1') {
-            setCondition(false);
-        } else {
-            setCondition(true);
-        }
-    }, []);
-
     const cryptoSymbols2 = useMemo(() => [...favorites], [favorites]);
+
+    const condition = true;
 
     const cryptoSymbols = useMemo(() => {
         if (condition) {

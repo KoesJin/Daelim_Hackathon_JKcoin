@@ -108,6 +108,11 @@ const MyCoinPage = () => {
         };
 
         fetchData();
+        const intervalId = setInterval(() => {
+            fetchData();
+        }, 3000);
+
+        return () => clearInterval(intervalId);
     }, []);
 
     const fetchCurrentPrices = async (coins) => {

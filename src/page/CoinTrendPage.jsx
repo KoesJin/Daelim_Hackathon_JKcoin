@@ -12,7 +12,6 @@ const CoinTrend = () => {
     const [currentPrices, setCurrentPrices] = useState({});
     const [exchangeRates, setExchangeRates] = useState({});
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const { isModalOpen, setIsModalOpen } = useOutletContext();
 
     const navigate = useNavigate();
@@ -103,15 +102,15 @@ const CoinTrend = () => {
             } else {
                 console.error('Failed to fetch exchange rates');
             }
+            setLoading(false);
         } catch (error) {
             console.error('Error fetching data:', error);
-            setError('Error fetching data');
+            setLoading(true); // 로딩 상태를 계속 유지
         }
     }, [coinNames]);
 
     useEffect(() => {
         const fetchData = async () => {
-            setLoading(true);
             try {
                 const userKey = localStorage.getItem('user_key');
                 if (!userKey) {
@@ -131,9 +130,7 @@ const CoinTrend = () => {
                 await fetchCurrentPrices();
             } catch (error) {
                 console.error('Error fetching data:', error);
-                setError('Error fetching data');
-            } finally {
-                setLoading(false);
+                setLoading(true); // 로딩 상태를 계속 유지
             }
         };
 
@@ -176,7 +173,7 @@ const CoinTrend = () => {
     return (
         <>
             <CSSTransition
-                in={!loading && !error}
+                in={!loading}
                 timeout={300}
                 classNames={{
                     enter: styles.fadeEnter,
@@ -192,7 +189,7 @@ const CoinTrend = () => {
                 </div>
             </CSSTransition>
             <CSSTransition
-                in={!loading && !error}
+                in={!loading}
                 timeout={300}
                 classNames={{
                     enter: styles.fadeEnter,
@@ -225,20 +222,7 @@ const CoinTrend = () => {
                     </div>
                 </div>
             </CSSTransition>
-            <CSSTransition
-                in={loading}
-                timeout={300}
-                classNames={{
-                    enter: styles.fadeEnter,
-                    enterActive: styles.fadeEnterActive,
-                    exit: styles.fadeExit,
-                    exitActive: styles.fadeExitActive,
-                }}
-                unmountOnExit
-            >
-                <LoadingComponent />
-            </CSSTransition>
-            {error && <div className={styles.error}>{error}</div>}
+            {loading && <LoadingComponent />}
             {isModalOpen && <SettingsModal onClose={closeModal} />}
         </>
     );

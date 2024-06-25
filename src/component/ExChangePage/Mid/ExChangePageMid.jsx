@@ -29,8 +29,11 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
 
     const filteredData = previousData.filter(
         (coin) =>
-            coin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            coin.symbol.toLowerCase().includes(searchQuery.toLowerCase())
+            coin &&
+            coin.name &&
+            coin.symbol &&
+            (coin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                coin.symbol.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
     return (

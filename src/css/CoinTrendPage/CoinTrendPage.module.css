@@ -1,8 +1,13 @@
+/* CoinTrendPage.module.css */
+body {
+    overflow: hidden;
+}
+
 .container {
     background-color: #282832;
     color: white;
-    padding: 10px 20px 20px 20px;
-    height: calc(100vh - 8vh);
+    padding: 70px 20px 20px 20px; /* 헤더 높이를 고려하여 상단 패딩 추가 */
+    height: calc(100vh - 70px); /* 헤더 높이를 고려하여 높이 조정 */
     font-family: 'Noto Sans KR', sans-serif;
     display: flex;
     flex-direction: column;
@@ -11,17 +16,46 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    overflow-y: auto;
+    overflow: hidden; /* 스크롤을 막기 위한 설정 */
 }
 
 .header {
-    text-align: center;
-    margin: 0 0 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background-color: rgb(40, 40, 50);
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .title {
     font-size: 1.8rem;
     font-weight: bold;
+    flex: 1;
+    text-align: center;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    fill: white;
+    position: absolute;
+    right: 20px;
+}
+
+.chartWrapper {
+    flex-grow: 1;
+    width: 100%;
+    overflow-y: auto; /* 내부 스크롤 설정 */
 }
 
 .chartContainer {
@@ -29,6 +63,8 @@
     flex-direction: column;
     gap: 20px;
     width: 100%;
+    padding: 0 20px 20px 20px;
+    box-sizing: border-box;
 }
 
 .coinItem {
@@ -39,6 +75,8 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #3a3a4f;
+    width: 100%; /* 아이템이 가로로 꽉 차도록 설정 */
+    box-sizing: border-box; /* 패딩 포함 박스 크기 계산 */
 }
 
 .coinHeader {
@@ -56,6 +94,78 @@
 .coinPrice {
     font-weight: normal;
     font-size: 1rem;
+}
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 10vh); /* 60px는 푸터의 높이로 가정 */
+    position: relative;
+}
+
+.spinner {
+    width: 64px;
+    height: 64px;
+    border: 8px solid;
+    border-color: #3498db transparent #3498db transparent;
+    border-radius: 50%;
+    animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: red;
+    font-size: 24px;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.fadeEnter {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+.fadeEnterActive {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms ease-in, transform 300ms ease-in;
+}
+.fadeExit {
+    opacity: 1;
+    transform: translateY(0);
+}
+.fadeExitActive {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 300ms ease-out, transform 300ms ease-out;
+}
+
+.refreshButton {
+    margin-top: 50px;
+    padding: 15px 30px;
+    font-size: 22px;
+    background-color: rgb(40, 40, 50);
+    color: white;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.refreshButton:hover {
+    background-color: rgb(30, 30, 40);
 }
 
 @media (max-width: 600px) {

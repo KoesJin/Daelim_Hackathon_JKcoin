@@ -14,60 +14,93 @@ const ExchangePage = () => {
     const [error, setError] = useState('');
     const [priceChanges, setPriceChanges] = useState({});
     const { setIsModalOpen } = useOutletContext();
+    const [favorites, setFavorites] = useState([]);
 
-    const cryptoSymbols = useMemo(
-        () => [
-            'bitcoin',
-            'solana',
-            'ethereum',
-            'stacks',
-            'aelf',
-            'dogecoin',
-            'status',
-            'tether',
-            'litecoin',
-            'cardano',
-            'chainlink',
-            'vechain',
-            'stellar',
-            'cosmos',
-            'tron',
-            'polkadot',
-            'uniswap',
-            'aave',
-            'algorand',
-            'avalanche',
-            'monero',
-            'tezos',
-            'nem',
-            'dash',
-            'iota',
-            'zcash',
-            'decred',
-            'qtum',
-            'waves',
-            'maker',
-            'compound',
-            'yearn-finance',
-            'balancer',
-            'curve-dao-token',
-            'ren',
-            'loopring',
-            'zilliqa',
-            'holo',
-            'theta',
-            'enjin-coin',
-            'bancor',
-            'ocean-protocol',
-            'serum',
-            'sushiswap',
-            '1inch',
-            'pancakeswap',
-            'bakerytoken',
-            'bittorrent',
-        ],
-        []
-    );
+    useEffect(() => {
+        const fetchFavorites = async () => {
+            try {
+                const user_key = localStorage.getItem('user_key');
+                let baseURL = '';
+                if (process.env.NODE_ENV === 'development') {
+                    baseURL = 'http://121.139.20.242:5011';
+                }
+
+                const response = await axios.post(`${baseURL}/api/favorites_select_user`, {
+                    user_key: user_key, // 적절한 user_key를 넣어주세요
+                });
+                if (response.data.valid) {
+                    setFavorites(response.data.coin_names); // coin_name이 ','로 구분된 문자열이라고 가정합니다.
+                } else {
+                    setFavorites([]);
+                }
+            } catch (error) {
+                console.error('Error fetching favorites:', error);
+            }
+        };
+
+        fetchFavorites();
+    }, []);
+
+    const cryptoSymbols2 = useMemo(() => [...favorites], [favorites]);
+
+    const condition = false;
+
+    const cryptoSymbols = useMemo(() => {
+        if (condition) {
+            return [
+                'bitcoin',
+                'solana',
+                'ethereum',
+                'stacks',
+                'aelf',
+                'dogecoin',
+                'status',
+                'tether',
+                'litecoin',
+                'cardano',
+                'chainlink',
+                'vechain',
+                'stellar',
+                'cosmos',
+                'tron',
+                'polkadot',
+                'uniswap',
+                'aave',
+                'algorand',
+                'avalanche',
+                'monero',
+                'tezos',
+                'nem',
+                'dash',
+                'iota',
+                'zcash',
+                'decred',
+                'qtum',
+                'waves',
+                'maker',
+                'compound',
+                'yearn-finance',
+                'balancer',
+                'curve-dao-token',
+                'ren',
+                'loopring',
+                'zilliqa',
+                'holo',
+                'theta',
+                'enjin-coin',
+                'bancor',
+                'ocean-protocol',
+                'serum',
+                'sushiswap',
+                '1inch',
+                'pancakeswap',
+                'bakerytoken',
+                'bittorrent',
+            ];
+        } else {
+            return cryptoSymbols2;
+        }
+    }, [condition, cryptoSymbols2]);
 
     useEffect(() => {
         let timeoutId;

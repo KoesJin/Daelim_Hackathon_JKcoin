@@ -1,24 +1,27 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import { Line } from 'react-chartjs-2';
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-} from 'chart.js';
+import { CSSTransition } from 'react-transition-group';
+import { ReactComponent as SettingsIcon } from '../svg/ExChangePage/Header/settings.svg';
+import SettingsModal from '../component/SettingsIcon/SettingsModal';
+import LoadingComponent from '../component/LoadingPage/LoadingComponent';
 import styles from '../css/CoinTrendPage/CoinTrendPage.module.css';
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 const CoinTrend = () => {
-    const [coinData, setCoinData] = useState([]);
     const [currentPrices, setCurrentPrices] = useState({});
     const [exchangeRates, setExchangeRates] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const { isModalOpen, setIsModalOpen } = useOutletContext();
+
+    const navigate = useNavigate();
+    if (!localStorage.getItem('user_key')) {
+        navigate('/LoginPage');
+    }
+    if (localStorage.getItem('user_key') === 'null') {
+        navigate('/LoginPage');
+    }
 
     const coinNames = useMemo(
         () => [
@@ -77,10 +80,7 @@ const CoinTrend = () => {
     const convertUSDToKRW = useCallback(
         (usdAmount) => {
             const exchangeRate = exchangeRates['KRW'];
-            if (exchangeRate) {
-                return usdAmount * exchangeRate;
-            }
-            return 0;
+            return usdAmount * (exchangeRate || 0); // Fallback if no exchange rate is available
         },
         [exchangeRates]
     );
@@ -90,19 +90,14 @@ const CoinTrend = () => {
             const coinSymbols = coinNames.join(',');
             const response = await axios.get(`https://api.coincap.io/v2/assets?ids=${coinSymbols}`);
 
-            console.log('Current Prices Response:', response.data);
-
             const prices = {};
             response.data.data.forEach((coin) => {
-                prices[coin.id] = parseFloat(coin.priceUsd); // Assuming price is in USD, adjust as per API response
+                prices[coin.id] = parseFloat(coin.priceUsd);
             });
 
             setCurrentPrices(prices);
 
             const exchangeRateResponse = await axios.get('https://api.exchangerate-api.com/v4/latest/USD');
-
-            console.log('Exchange Rates Response:', exchangeRateResponse.data);
-
             if (exchangeRateResponse.data && exchangeRateResponse.data.rates) {
                 setExchangeRates(exchangeRateResponse.data.rates);
             } else {
@@ -110,11 +105,13 @@ const CoinTrend = () => {
             }
         } catch (error) {
             console.error('Error fetching data:', error);
+            setError('Error fetching data');
         }
     }, [coinNames]);
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             try {
                 const userKey = localStorage.getItem('user_key');
                 if (!userKey) {
@@ -127,33 +124,23 @@ const CoinTrend = () => {
                     baseURL = 'http://121.139.20.242:5011';
                 }
 
-                const totalValueResponse = await axios.post(`${baseURL}/api/total_coin_value`, {
+                await axios.post(`${baseURL}/api/total_coin_value`, {
                     user_key: userKey,
                 });
 
-                console.log('Total Value Response:', totalValueResponse.data);
-
                 await fetchCurrentPrices();
-
-                setCoinData(coinNames.map((coinName) => ({ coinName, history: [] })));
             } catch (error) {
                 console.error('Error fetching data:', error);
+                setError('Error fetching data');
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchData();
-        const intervalId = setInterval(() => {
-            fetchData();
-        }, 3000);
-
-        return () => clearInterval(intervalId);
     }, [fetchCurrentPrices, coinNames]);
 
-    const formatNumber = (number, decimals = 0) => {
-        if (number === undefined || number === null) {
-            return '';
-        }
-
+    const formatNumber = (number, decimals = 2) => {
         return number.toLocaleString('ko-KR', {
             minimumFractionDigits: decimals,
             maximumFractionDigits: decimals,
@@ -161,11 +148,8 @@ const CoinTrend = () => {
     };
 
     const generateChartData = (coin) => {
-        // 임시 테스트 데이터를 추가합니다.
-        const labels = coin.history
-            ? coin.history.map((data) => data.date)
-            : ['2024-06-01', '2024-06-02', '2024-06-03'];
-        const data = coin.history ? coin.history.map((data) => convertUSDToKRW(data.priceUsd)) : [100, 105, 110];
+        const labels = Array.from({ length: 30 }, (_, i) => `Day ${i + 1}`);
+        const data = labels.map(() => Math.random() * 10000); // Generate random data for demo
 
         return {
             labels,
@@ -181,28 +165,82 @@ const CoinTrend = () => {
         };
     };
 
-    return (
-        <div className={styles.container}>
-            <div className={styles.header}>
-                <div className={styles.title}>코인동향</div>
-            </div>
-            <div className={styles.chartContainer}>
-                {coinData.map((coin) => {
-                    const currentPrice = currentPrices[coin.coinName];
-                    const convertedPrice = convertUSDToKRW(currentPrice);
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
 
-                    return (
-                        <div key={coin.coinName} className={styles.coinItem}>
-                            <div className={styles.coinHeader}>
-                                <div className={styles.coinName}>{coin.coinName}</div>
-                                <div className={styles.coinPrice}>현재가: {formatNumber(convertedPrice, 2)} KRW</div>
-                            </div>
-                            <Line data={generateChartData(coin)} />
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    return (
+        <>
+            <CSSTransition
+                in={!loading && !error}
+                timeout={300}
+                classNames={{
+                    enter: styles.fadeEnter,
+                    enterActive: styles.fadeEnterActive,
+                    exit: styles.fadeExit,
+                    exitActive: styles.fadeExitActive,
+                }}
+                unmountOnExit
+            >
+                <div className={styles.header}>
+                    <div className={styles.title}>코인동향</div>
+                    <SettingsIcon className={styles.icon} onClick={openModal} />
+                </div>
+            </CSSTransition>
+            <CSSTransition
+                in={!loading && !error}
+                timeout={300}
+                classNames={{
+                    enter: styles.fadeEnter,
+                    enterActive: styles.fadeEnterActive,
+                    exit: styles.fadeExit,
+                    exitActive: styles.fadeExitActive,
+                }}
+                unmountOnExit
+            >
+                <div className={styles.container}>
+                    <div className={styles.chartWrapper}>
+                        <div className={styles.chartContainer}>
+                            {coinNames.map((coinName) => {
+                                const currentPrice = currentPrices[coinName];
+                                const convertedPrice = convertUSDToKRW(currentPrice || 0);
+
+                                return (
+                                    <div key={coinName} className={styles.coinItem}>
+                                        <div className={styles.coinHeader}>
+                                            <div className={styles.coinName}>{coinName}</div>
+                                            <div className={styles.coinPrice}>
+                                                현재가: {formatNumber(convertedPrice)} KRW
+                                            </div>
+                                        </div>
+                                        <Line data={generateChartData({ coinName })} />
+                                    </div>
+                                );
+                            })}
                         </div>
-                    );
-                })}
-            </div>
-        </div>
+                    </div>
+                </div>
+            </CSSTransition>
+            <CSSTransition
+                in={loading}
+                timeout={300}
+                classNames={{
+                    enter: styles.fadeEnter,
+                    enterActive: styles.fadeEnterActive,
+                    exit: styles.fadeExit,
+                    exitActive: styles.fadeExitActive,
+                }}
+                unmountOnExit
+            >
+                <LoadingComponent />
+            </CSSTransition>
+            {error && <div className={styles.error}>{error}</div>}
+            {isModalOpen && <SettingsModal onClose={closeModal} />}
+        </>
     );
 };
 

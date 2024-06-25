@@ -19,10 +19,6 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
         }
     }, [cryptoData]);
 
-    const handleTabClick = (tab) => {
-        setActiveTab(tab);
-    };
-
     const formatNumber = (number, decimals = 0) => {
         return number.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     };
@@ -36,19 +32,25 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
             <div className={styles.tabs}>
                 <button
                     className={`${styles.tab} ${activeTab === 'KRW' ? styles.active : ''}`}
-                    onClick={() => handleTabClick('KRW')}
+                    onClick={() => {
+                        setActiveTab('KRW');
+                    }}
                 >
                     KRW
                 </button>
                 <button
                     className={`${styles.tab} ${activeTab === 'USDT' ? styles.active : ''}`}
-                    onClick={() => handleTabClick('USDT')}
+                    onClick={() => {
+                        setActiveTab('USDT');
+                    }}
                 >
                     USDT
                 </button>
                 <button
-                    className={`${styles.tab} ${activeTab === '관심' ? styles.active : ''}`}
-                    onClick={() => handleTabClick('관심')}
+                    className={`${styles.tab} ${activeTab === 'favorites' ? styles.active : ''}`}
+                    onClick={() => {
+                        setActiveTab('favorites');
+                    }}
                 >
                     관심
                 </button>
@@ -91,13 +93,13 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
                                         </Link>
                                     </td>
                                     <td className={priceClass}>
-                                        {activeTab === 'KRW'
+                                        {activeTab === 'KRW' || activeTab === 'favorites'
                                             ? `${formatNumber(currentPrice * exchangeRate)}`
                                             : `${formatNumber(currentPrice, 2)}`}
                                     </td>
                                     <td className={changeClass}>{changePercent.toFixed(2)}%</td>
                                     <td>
-                                        {activeTab === 'KRW'
+                                        {activeTab === 'KRW' || activeTab === 'favorites'
                                             ? `${formatNumber(
                                                   (parseFloat(coin.volumeUsd24Hr) * exchangeRate) / 1000000
                                               )}백만`

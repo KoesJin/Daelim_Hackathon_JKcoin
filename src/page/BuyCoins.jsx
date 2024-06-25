@@ -15,11 +15,10 @@ export default function BuyCoins() {
     const [showBuyForm, setShowBuyForm] = useState(true);
     const [showSellForm, setShowSellForm] = useState(false);
     const [ownedCoins, setOwnedCoins] = useState(null);
-    const [isStarred, setIsStarred] = useState(false);
+    const [isStarred, setIsStarred] = useState(false); // State to toggle star icon color
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const coinName = searchParams.get('coinName')?.toLowerCase();
-
     const chartRef = useRef(null);
     const chartContainerRef = useRef(null);
     const buyPercentageButtonsRef = useRef([]);
@@ -209,12 +208,12 @@ export default function BuyCoins() {
         if (actionType === 'buy') {
             updateActiveClass(buyPercentageButtonsRef, index);
             if (totalAmount > walletBalance) {
-                setNumberOfCoins('');
-                setTotalPurchasePrice(0);
+                setNumberOfCoins(coins.toFixed(11) - 0.00000001);
+                setTotalPurchasePrice(parseFloat(totalAmount.toFixed(11) - 0.00000001));
                 alert('잔액이 부족합니다.');
             } else {
-                setNumberOfCoins(coins.toFixed(11));
-                setTotalPurchasePrice(parseFloat(totalAmount.toFixed(11)));
+                setNumberOfCoins(coins.toFixed(11) - 0.00000001);
+                setTotalPurchasePrice(parseFloat(totalAmount.toFixed(11) - 0.00000001));
             }
         } else if (actionType === 'sell') {
             updateActiveClass(sellPercentageButtonsRef, index);
@@ -225,9 +224,9 @@ export default function BuyCoins() {
                 return;
             }
             const coinsToSell = (parseFloat(ownedCoins) * percentage) / 100;
-            setNumberOfCoins(coinsToSell.toFixed(11));
+            setNumberOfCoins(coinsToSell.toFixed(11) - 0.00000001);
             const totalPrice = parseFloat(currentPrice) * coinsToSell;
-            setTotalPurchasePrice(parseFloat(totalPrice.toFixed(11)));
+            setTotalPurchasePrice(parseFloat(totalPrice.toFixed(11) - 0.00000001));
         }
     };
 
@@ -240,7 +239,7 @@ export default function BuyCoins() {
             setTotalPurchasePrice(0);
             alert('잔액이 부족합니다.');
         } else {
-            setNumberOfCoins(coins.toFixed(11) - 0.00000000001);
+            setNumberOfCoins(coins.toFixed(11) - 0.00000001); // Convert to string with fixed decimals
             setTotalPurchasePrice(totalPrice);
         }
     };
@@ -347,32 +346,72 @@ export default function BuyCoins() {
     };
 
     const formatNumber = (number) => {
-        return Number(number).toLocaleString(undefined, { minimumFractionDigits: 11, maximumFractionDigits: 11 });
+        return Number(number).toLocaleString(undefined, {
+            minimumFractionDigits: 11,
+            maximumFractionDigits: 11,
+        });
     };
 
-    const toggleStar = () => {
-        // setIsStarred(!isStarred);
+    const toggleStar = async () => {
+        try {
+            let baseURL = '';
+            if (process.env.NODE_ENV === 'development') {
+                // 개발 환경에서는 로컬 IP를 사용
+                baseURL = 'http://121.139.20.242:5011';
+            }
+            const user_key = localStorage.getItem('user_key');
+            const response = await axios.post(`${baseURL}/api/favorites_select`, {
+                user_key: user_key,
+                coin_name: coinName,
+            }); // fa 테이블 데이터를 가져오는 API 호출
+
+            if (response.data.valid === true) {
+                const removeResponse = await axios.post(`${baseURL}/api/favorites_remove`, {
+                    user_key: user_key,
+                    coin_name: coinName,
+                }); // 즐겨찾기 삭제 API 호출
+                if (removeResponse.data.success === true) {
+                    setIsStarred(false); // 즐겨찾기 삭제 후 false로 설정
+                }
+            } else {
+                const addResponse = await axios.post(`${baseURL}/api/favorites_add`, {
+                    user_key: user_key,
+                    coin_name: coinName,
+                }); // 즐겨찾기 추가 API 호출
+                if (addResponse.data.success === true) {
+                    setIsStarred(true); // 즐겨찾기 추가 후 true로 설정
+                }
+            }
+        } catch (error) {
+            console.error('데이터를 가져오는 중 오류 발생:', error);
+        }
     };
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchDataSelect = async () => {
             try {
                 let baseURL = '';
                 if (process.env.NODE_ENV === 'development') {
+                    // 개발 환경에서는 로컬 IP를 사용
                     baseURL = 'http://121.139.20.242:5011';
                 }
-                const response = await axios.get(`${baseURL}/api/favorites_select`);
+                const user_key = localStorage.getItem('user_key');
+                console.log(coinName);
+                const response = await axios.post(`${baseURL}/api/favorites_select`, {
+                    user_key: user_key,
+                    coin_name: coinName,
+                }); // fa 테이블 데이터를 가져오는 API 호출
                 if (response.data.valid === true) {
-                    setIsStarred(true);
+                    setIsStarred(true); // user_key와 coin 값이 있으면 true로 설정
                 } else {
-                    setIsStarred(false);
+                    setIsStarred(false); // 없으면 false로 설정
                 }
             } catch (error) {
                 console.error('데이터를 가져오는 중 오류 발생:', error);
             }
         };
 
-        fetchData();
+        fetchDataSelect();
     }, []);
 
     return (

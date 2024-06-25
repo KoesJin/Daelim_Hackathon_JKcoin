@@ -225,7 +225,7 @@ export default function BuyCoins() {
                 return;
             }
             const coinsToSell = (parseFloat(ownedCoins) * percentage) / 100;
-            setNumberOfCoins(coinsToSell.toFixed(8));
+            setNumberOfCoins(coinsToSell.toFixed(11));
             const totalPrice = parseFloat(currentPrice) * coinsToSell;
             setTotalPurchasePrice(parseFloat(totalPrice.toFixed(11)));
         }
@@ -273,7 +273,7 @@ export default function BuyCoins() {
             });
 
             if (response.data.success) {
-                alert('매수가 성공했습니다!');
+                alert('매수에 성공했습니다!');
                 setWalletBalance(walletBalance - totalPrice);
                 setNumberOfCoins('');
                 setTotalPurchasePrice(0);
@@ -322,7 +322,7 @@ export default function BuyCoins() {
             });
 
             if (response.data.success) {
-                alert('매도가 성공했습니다!');
+                alert('매도에 성공했습니다!');
                 setWalletBalance(walletBalance + totalPrice);
                 setNumberOfCoins('');
                 setTotalPurchasePrice(0);

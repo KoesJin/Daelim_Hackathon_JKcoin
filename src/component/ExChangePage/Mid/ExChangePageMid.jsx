@@ -6,18 +6,32 @@ import { Link, useNavigate } from 'react-router-dom';
 const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
     const [activeTab, setActiveTab] = useState('KRW');
     const [previousData, setPreviousData] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredData, setFilteredData] = useState([]);
     const navigate = useNavigate();
+
     if (!localStorage.getItem('user_key')) {
         navigate('/LoginPage');
     }
     if (localStorage.getItem('user_key') === 'null') {
         navigate('/LoginPage');
     }
+
     useEffect(() => {
         if (cryptoData && cryptoData.length > 0) {
             setPreviousData((prevData) => cryptoData.map((coin, index) => coin || prevData[index]));
         }
     }, [cryptoData]);
+
+    useEffect(() => {
+        const filtered = previousData.filter((coin) => {
+            return (
+                coin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                coin.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        });
+        setFilteredData(filtered);
+    }, [searchTerm, previousData]);
 
     const formatNumber = (number, decimals = 0) => {
         return number.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -27,7 +41,12 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
         <div className={styles.content}>
             <div className={styles.searchBar}>
                 <SearchIcon className={styles.searchIcon} />
-                <input type="text" placeholder="코인명/심볼 검색" />
+                <input
+                    type="text"
+                    placeholder="코인명/심볼 검색"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
             </div>
             <div className={styles.tabs}>
                 <button
@@ -66,7 +85,7 @@ const ExChangePageMid = ({ exchangeRate, cryptoData, priceChanges }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {previousData.map((coin, index) => {
+                        {filteredData.map((coin, index) => {
                             if (!coin) return null;
 
                             const currentPrice = parseFloat(coin.priceUsd);

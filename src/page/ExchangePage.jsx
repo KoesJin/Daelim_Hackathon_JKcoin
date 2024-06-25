@@ -43,7 +43,7 @@ const ExchangePage = () => {
 
     const cryptoSymbols2 = useMemo(() => [...favorites], [favorites]);
 
-    const condition = false;
+    const condition = true;
 
     const cryptoSymbols = useMemo(() => {
         if (condition) {

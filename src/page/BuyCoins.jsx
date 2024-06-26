@@ -412,7 +412,7 @@ export default function BuyCoins() {
         };
 
         fetchDataSelect();
-    }, []);
+    }, [coinName]);
 
     return (
         <div className={styles.container}>
